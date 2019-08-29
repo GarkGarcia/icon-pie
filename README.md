@@ -26,17 +26,17 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 * `$ echo Here's an ICNS file: ${ icon-pie -e image.jpg 16 32 64 -r cubic -icns | hexdump }`
 
 ## Supported Image Formats
-| Format | Supported?                                                      | 
-|--------|-----------------------------------------------------------------| 
-| `PNG`  | All supported color types                                       | 
-| `JPEG` | Baseline and progressive                                        | 
-| `GIF`  | Yes                                                             | 
-| `BMP`  | Yes                                                             | 
-| `ICO`  | Yes                                                             | 
-| `TIFF` | Baseline(no fax support), `LZW`, PackBits                       | 
-| `WEBP` | Lossy(Luma channel only)                                        | 
-| `PNM ` | `PBM`, `PGM`, `PPM`, standard `PAM`                             |
-| `SVG`  | [Limited](https://github.com/GarkGarcia/icon-pie#svg-support)   |
+| Format | Supported?                                                    | 
+|--------|---------------------------------------------------------------| 
+| `PNG`  | All supported color types                                     | 
+| `JPEG` | Baseline and progressive                                      | 
+| `GIF`  | Yes                                                           | 
+| `BMP`  | Yes                                                           | 
+| `ICO`  | Yes                                                           | 
+| `TIFF` | Baseline(no fax support), `LZW`, PackBits                     | 
+| `WEBP` | Lossy(Luma channel only)                                      | 
+| `PNM ` | `PBM`, `PGM`, `PPM`, standard `PAM`                           |
+| `SVG`  | [Limited](https://github.com/GarkGarcia/icon-pie#svg-support) |
 
 ## Limitations
 **IconPie** has two main limitations: both `ICNS` and `SVG` are not fully supported. Due to the 
