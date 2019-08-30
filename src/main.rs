@@ -102,8 +102,9 @@ fn icon(entries: &Entries, icon_type: IconType, output: Output) -> io::Result<()
 #[inline]
 fn help() {
     println!(
-        "{}\nV {}",
+        "{}\n{}{}",
         style(TITLE).with(Color::Green),
+        style("V").with(Color::Green),
         style(VERSION).with(Color::Green)
     );
 

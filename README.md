@@ -1,31 +1,47 @@
 # IconPie
+
 [![Crate](https://img.shields.io/crates/v/icon-pie.svg)](https://crates.io/crates/icon-pie)
 [![Minimum rustc version](https://img.shields.io/badge/rustc-1.32+-lightgray.svg)](https://github.com/rust-random/rand#rust-version-requirements)
 
 A simple command-line tool for generating application icons.
-Quickly combine multiple images and create professional-looking icons for most versions of Windows, macOS, iOS & Linux.
+Quickly combine multiple images and create professional-looking icons for most versions of Windows, 
+macOS, iOS & Linux.
 
-## Usage
+# Overview
+
+An _icon_ consists of a set of _entries_. An _entry_ is simply an image that has a particular size.
+For example, this is an icon that has a 32x32 entry, a 64x64 entry and a 128x128 entry:
+
+![Concepts](examples/concepts.png)
+
+## What does it do?
+
+Notice that it the example above all entries are basically the same picture re-scaled to 
+multiple sizes. **IconPie** simply automates the process of re-scaling the picture and combining 
+those re-scaled entries into an icon.
+
+# Usage
+
 The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as follows:
 
 `$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version`
 
-| Flag                    | Description                                                                                                            |
-|-------------------------|------------------------------------------------------------------------------------------------------------------------|
-| `-e <options>`          | Specify an entry's options.                                                                                            |
-| `-r <filter>`           | Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified the app defaults to `nearest`. |
-| `-ico [<output path>]`  | Outputs to an `.ico` file. If no output path is specified the app outputs to `stdout`.                                  |
-| `-icns [<output path>]` | Outputs to an `.icns` file. If no output path is specified the app outputs to `stdout`.                                 |
-| `-png [<output path>]`  | Outputs a `.png` sequence as a `.tar` file. If no output path is specified the app outputs to `stdout`.                |
-| `-h`, `--help`          | Help.                                                                                                                  |
-| `-v`, `--version`       | Display version information.                                                                                           |
+* `-e <options>` Specify an entry's options.
+* `-r <filter>` Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified the app defaults to `nearest`.
+* `-ico [<output path>]` Outputs to an `.ico` file. If no output path is specified the app outputs to `stdout`.
+* `-icns [<output path>]` Outputs to an `.icns` file. If no output path is specified the app outputs to `stdout`.
+* `-png [<output path>]` Outputs a `.png` sequence as a `.tar` file. If no output path is specified the app outputs to `stdout`.
+* `-h`, `--help` Help.
+* `-v`, `--version` Display version information.
 
 ### Examples
+
 * `$ icon-pie -e small.svg 16 20 24 -e big.png 32 64 -ico output.ico`
 * `$ icon-pie -e image.png 32 64 48 -r linear -png output.tar`
 * `$ echo Here's an ICNS file: ${ icon-pie -e image.jpg 16 32 64 -r cubic -icns | hexdump }`
 
 ## Supported Image Formats
+
 | Format | Supported?                                                    | 
 |--------|---------------------------------------------------------------| 
 | `PNG`  | All supported color types                                     | 
@@ -39,6 +55,7 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 | `SVG`  | [Limited](https://github.com/GarkGarcia/icon-pie#svg-support) |
 
 ## Limitations
+
 **IconPie** has two main limitations: both `ICNS` and `SVG` are not fully supported. Due to the 
 use of external dependencies, this app's author is not able to fully support the formal specifications 
 of those two file formats.
@@ -46,6 +63,7 @@ of those two file formats.
 However, the coverage provided by this external dependencies should be enough for most use cases.
 
 ### ICNS Support
+
 | OSType | Description                             | Supported? |
 |--------|-----------------------------------------|------------|
 | `ICON` | 32×32 1-bit icon                        | No         |
@@ -82,6 +100,7 @@ However, the coverage provided by this external dependencies should be enough fo
 | `ic14` | 256x256@2x "retina" 32-bit PNG/JP2 icon | PNG only   |
 
 ### SVG Support
+
 **IconPie** uses the `nsvg` crate to rasterize `.svg` files. According to the authors of the crate:
 
 > Like NanoSVG, the rasterizer only renders flat filled shapes. It is not particularly fast or accurate, but it is a simple way to bake vector graphics into textures.
@@ -89,4 +108,5 @@ However, the coverage provided by this external dependencies should be enough fo
 The author of `icon-pie` is inclined to search for alternatives to `nsvg` if inquired to. Help would be appreciated.
 
 ## License
+
 Licensed under MIT license([LICENSE-MIT](https://github.com/GarkGarcia/icon-pie/blob/master/LICENSE) or http://opensource.org/licenses/MIT).
