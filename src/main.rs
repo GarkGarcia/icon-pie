@@ -42,7 +42,7 @@ macro_rules! syntax {
     ($err:expr) => { Err(Error::Syntax($err)) };
 }
 
-const VERSION: &str = "0.1.3-beta";
+const VERSION: &str = "0.1.4-beta";
 const TITLE: &str = r"
  _____               ______ _      
 |_   _|              | ___ (_)     
@@ -104,7 +104,7 @@ fn help() {
     println!(
         "{}\n{}{}",
         style(TITLE).with(Color::Green),
-        style("V").with(Color::Green),
+        style("v").with(Color::Green),
         style(VERSION).with(Color::Green)
     );
 
@@ -145,6 +145,7 @@ fn args() -> Vec<String> {
         .map(|os_str| String::from(os_str.to_string_lossy()))
         .collect();
 
+    // Refactor this
     if output.len() > 0 {
         if let parse::Token::Path(_) = parse::Token::from(output[0].as_ref()) {
             return Vec::from(&output[1..]);

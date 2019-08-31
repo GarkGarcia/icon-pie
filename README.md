@@ -10,37 +10,67 @@ macOS, iOS & Linux.
 # Overview
 
 An _icon_ consists of a set of _entries_. An _entry_ is simply an image that has a particular size.
-For example, this is an icon that has a 32x32 entry, a 64x64 entry and a 128x128 entry:
+For example, this is an icon that has a _32x32_ entry, a _64x64_ entry and a _128x128_ entry:
 
 ![Concepts](examples/concepts.png)
 
 ## What does it do?
 
-Notice that it the example above all entries are basically the same picture re-scaled to 
+Notice that, in the example above, most entries are basically the same picture re-scaled to 
 multiple sizes. **IconPie** simply automates the process of re-scaling the picture and combining 
 those re-scaled entries into an icon.
+
+## How does it do it?
+
+When re-scaling pictures, **IconPie** preserves it's original aspect ratio. It also ensures that 
+the final entry is a square picture, by adding transparent borders if necessary.
+
+![Adding Transparent Borders](examples/borders.png)
+
+**IconPie** uses 
+_[nearest-neighbor interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ 
+for _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ by default, optimizing for 
+small-resolution images. Furthermore, when using _nearest-neighbor interpolation_, it only 
+up-scales images on an integer scale, preserving as much detail as possible.
+
+You can choose to opt-out of the default resampling scheme for _raster graphics_ by specifying a 
+resampling filter with the `-r` flag, as described in the **[Usage](#Usage)** section.
+
+**IconPie** _always_ uses _[linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)_ 
+for _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_, regardless of any specified 
+resampling filter.
+
+![Default Resample](examples/default_resample.png)
 
 # Usage
 
 The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as follows:
 
-`$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version`
+```$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version```
 
-* `-e <options>` Specify an entry's options.
-* `-r <filter>` Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified the app defaults to `nearest`.
-* `-ico [<output path>]` Outputs to an `.ico` file. If no output path is specified the app outputs to `stdout`.
+* `-e <options>`          Specify an entry's options.
+* `-r <filter>`           Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified the app defaults to `nearest`.
+* `-ico [<output path>]`  Outputs to an `.ico` file. If no output path is specified the app outputs to `stdout`.
 * `-icns [<output path>]` Outputs to an `.icns` file. If no output path is specified the app outputs to `stdout`.
-* `-png [<output path>]` Outputs a `.png` sequence as a `.tar` file. If no output path is specified the app outputs to `stdout`.
-* `-h`, `--help` Help.
-* `-v`, `--version` Display version information.
+* `-png [<output path>]`  Outputs a `.png` sequence as a `.tar` file. If no output path is specified the app outputs to `stdout`.
+* `-h`, `--help`          Help.
+* `-v`, `--version`       Display version information.
 
-### Examples
+## Examples
 
 * `$ icon-pie -e small.svg 16 20 24 -e big.png 32 64 -ico output.ico`
 * `$ icon-pie -e image.png 32 64 48 -r linear -png output.tar`
 * `$ echo Here's an ICNS file: ${ icon-pie -e image.jpg 16 32 64 -r cubic -icns | hexdump }`
 
-## Supported Image Formats
+# Support
+
+## Icon Formats
+
+* `ICO`
+* `ICNS`
+* `PNG Sequence`
+
+## Image Formats
 
 | Format | Supported?                                                    | 
 |--------|---------------------------------------------------------------| 
@@ -54,15 +84,7 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 | `PNM ` | `PBM`, `PGM`, `PPM`, standard `PAM`                           |
 | `SVG`  | [Limited](https://github.com/GarkGarcia/icon-pie#svg-support) |
 
-## Limitations
-
-**IconPie** has two main limitations: both `ICNS` and `SVG` are not fully supported. Due to the 
-use of external dependencies, this app's author is not able to fully support the formal specifications 
-of those two file formats.
-
-However, the coverage provided by this external dependencies should be enough for most use cases.
-
-### ICNS Support
+## ICNS Support
 
 | OSType | Description                             | Supported? |
 |--------|-----------------------------------------|------------|
@@ -99,7 +121,7 @@ However, the coverage provided by this external dependencies should be enough fo
 | `ic13` | 128x128@2x "retina" 32-bit PNG/JP2 icon | PNG only   |
 | `ic14` | 256x256@2x "retina" 32-bit PNG/JP2 icon | PNG only   |
 
-### SVG Support
+## SVG Support
 
 **IconPie** uses the `nsvg` crate to rasterize `.svg` files. According to the authors of the crate:
 
@@ -107,6 +129,6 @@ However, the coverage provided by this external dependencies should be enough fo
 
 The author of `icon-pie` is inclined to search for alternatives to `nsvg` if inquired to. Help would be appreciated.
 
-## License
+# License
 
 Licensed under MIT license([LICENSE-MIT](https://github.com/GarkGarcia/icon-pie/blob/master/LICENSE) or http://opensource.org/licenses/MIT).

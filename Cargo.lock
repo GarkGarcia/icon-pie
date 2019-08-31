@@ -207,7 +207,7 @@ dependencies = [
 
 [[package]]
 name = "icon-pie"
-version = "0.1.3-beta"
+version = "0.1.4-beta"
 dependencies = [
  "crossterm 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "icon_baker 2.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
