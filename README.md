@@ -33,14 +33,14 @@ for _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ by defaul
 small-resolution images. Furthermore, when using _nearest-neighbor interpolation_, it only 
 up-scales images on an integer scale, preserving as much detail as possible.
 
+![Default Resample](examples/default_resample.png)
+
 You can choose to opt-out of the default resampling scheme for _raster graphics_ by specifying a 
 resampling filter with the `-r` flag, as described in the **[Usage](#Usage)** section.
 
 **IconPie** _always_ uses _[linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)_ 
 for _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_, regardless of any specified 
 resampling filter.
-
-![Default Resample](examples/default_resample.png)
 
 # Usage
 
