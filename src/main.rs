@@ -54,7 +54,7 @@ const USAGE: &str = "$ icon-pie ((-e <file path> <size>... [-r (nearest | linear
 const EXAMPLES: [&str;3] = [
     "$ icon-pie -e big.svg 32 64 128 -ico icon.ico",
     "$ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns",
-    "$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -icns icon.icns"
+    "$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -png icon.tar"
 ];
 
 const COMMANDS: [&str;7] = [

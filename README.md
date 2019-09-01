@@ -83,7 +83,7 @@ We'll walk trought some practical examples of **IconPie** usage.
 
 ### Simple Usage
 
-> **IconPie**, take `big.svg`, resize it to _32x32_, _64x64_ and _128x128_. Then save it at `icon.ico`.
+> Take `big.svg`, resize it to _32x32_, _64x64_ and _128x128_. Then save it at `icon.ico`.
 
 ```
 $ icon-pie -e big.svg 32 64 128 -ico icon.ico
@@ -93,7 +93,7 @@ $ icon-pie -e big.svg 32 64 128 -ico icon.ico
 
 ### Sampling From Multiple Files
 
-> **IconPie**, take `small.png`, resize it to _32x32_ and _64x64_. Then take `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.icns`.
+> Take `small.png`, resize it to _32x32_ and _64x64_. Then take `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.icns`.
 
 ```
 $ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns
@@ -103,10 +103,10 @@ $ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns
 
 ### Specifying a Resampling Filter
 
-> **IconPie**, take `small.png`, resize it to _32x32_ and _64x64_ **_using linear interpolation_**. Then take `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.tar` as a `png` sequence.
+> Take `small.png`, resize it to _32x32_ and _64x64_ **_using linear interpolation_**. Then take `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.tar` as a `png` sequence.
 
 ```
-$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -icns icon.icns
+$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -png icon.tar
 ```
 
 ![Example 3](examples/example_3.png)
