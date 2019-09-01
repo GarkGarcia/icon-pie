@@ -34,15 +34,22 @@ the all re-scaled pictures are square, by adding transparent borders if necessar
 
 ### Interpolation
 
-- With images in _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ (JPEG, PNG, ...), **IconPie** uses _[nearest-neighbor interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ by default, optimizing for  small-resolution images.
+- With images in _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ (JPEG, PNG, ...), 
+**IconPie** uses 
+_[nearest-neighbor interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ 
+by default, optimizing for  small-resolution images.
 
-  Furthermore, when using _nearest-neighbor interpolation_, it only up-scales images on an integer scale, preserving as much detail as possible.
+  Furthermore, when using _nearest-neighbor interpolation_, it only up-scales images on an integer 
+scale, preserving as much detail as possible.
 
   ![Default Resample](examples/default_resample.png)
 
-  You can choose to opt-out of the default resampling scheme for _raster graphics_ by specifying a resampling filter with the `-r` flag, as described in the **[Usage](#Usage)** section.
+  You can choose to opt-out of the default resampling scheme for _raster graphics_ by specifying a 
+resampling filter with the `-r` flag, as described in the **[Usage](#Usage)** section.
 
-- With images in _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_ (SVG), **IconPie** _always_ uses _[linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)_ regardless of any specified resampling filter.
+- With images in _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_ (SVG), 
+**IconPie** _always_ uses _[linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)_ 
+regardless of any specified resampling filter.
 
 # Usage
 
@@ -50,23 +57,16 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 
 ```$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version```
 
-* `-e <options>`          Specify an entry's options.
-
-* `-r <filter>`           Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is 
-  specified the app defaults to `nearest`.
-
-* `-ico [<output path>]`  Outputs to an `.ico` file. If no output path is specified the app outputs to 
+* `-e <options>` Specify an entry's options.
+* `-r <filter>` Specify a resampling filter: `nearest`, `linear` or `cubic`. Defaults to `nearest`.
+* `-ico [<output path>]` Outputs to an `.ico` file. If no output path is specified the app outputs to 
   `stdout`.
-
 * `-icns [<output path>]` Outputs to an `.icns` file. If no output path is specified the app outputs 
   to `stdout`.
-
-* `-png [<output path>]`  Outputs a `.png` sequence as a `.tar` file. If no output path is specified the 
+* `-png [<output path>]` Outputs a `.png` sequence as a `.tar` file. If no output path is specified the 
   app outputs to `stdout`.
-
-* `-h`, `--help`          Help.
-
-* `-v`, `--version`       Display version information.
+* `-h`, `--help` Help.
+* `-v`, `--version` Display version information.
 
 ## Examples
 
