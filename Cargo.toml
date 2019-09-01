@@ -12,5 +12,5 @@ keywords = ["cli", "icon", "ico", "icns"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-icon_baker = "2.1.2"
+icon_baker = "2.2.0"
 crossterm = "0.7.0"

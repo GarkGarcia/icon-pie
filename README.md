@@ -33,26 +33,26 @@ those re-scaled entries into an icon.
 ### Re-scaling
 
 When re-scaling pictures, **IconPie** preserves their original aspect-ratios. It also ensures that 
-the all re-scaled pictures are square, by adding transparent borders if necessary.
+the all re-scaled images are square, by adding transparent borders if necessary. If the picture 
+presents a transparent backaground, the transparency is preserved in the re-scaled images.
 
 ![Adding Transparent Borders](examples/borders.png)
 
 ### Interpolation
 
-- With images in _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ (JPEG, PNG, ...), 
-**IconPie** uses 
-_[nearest-neighbor interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ 
+For _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ (`jpeg`, `png`, ...), **IconPie** 
+uses _[nearest-neighbor interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ 
 by default, optimizing for  small-resolution images.
 
-  Furthermore, when using _nearest-neighbor interpolation_, it only up-scales images on an integer 
+Furthermore, when using _nearest-neighbor interpolation_, it only up-scales images on an integer 
 scale, preserving as much detail as possible.
 
-  ![Default Resample](examples/default_resample.png)
+![Default Resample](examples/default_resample.png)
 
-  You can choose to opt-out of the default resampling scheme for _raster graphics_ by specifying a 
+You can choose to opt-out of the default interpolation scheme for _raster graphics_ by specifying a 
 resampling filter with the `-r` flag, as described in the **[Usage](#Usage)** section.
 
-- With images in _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_ (SVG), 
+For _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_ (`svg`), 
 **IconPie** _always_ uses _[linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)_ 
 regardless of any specified resampling filter.
 
@@ -83,64 +83,68 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 
 ## Icon Formats
 
-* `ICO`
-* `ICNS`
-* `PNG Sequence`
+This are the file formats **IconPie** can output to:
 
-### ICNS Support
+* `ico`
+* `icns`
+* `png` sequence (`tar`)
 
-| OSType | Description                             | Supported? |
-|--------|-----------------------------------------|------------|
-| `ICON` | 32×32 1-bit icon                        | No         |
-| `ICN#` | 32×32 1-bit icon with 1-bit mask        | No         |
-| `icm#` | 16×12 1-bit icon with 1-bit mask        | No         |
-| `icm4` | 16×12 4-bit icon                        | No         |
-| `icm8` | 16×12 8-bit icon                        | No         |
-| `ics#` | 16×16 1-bit mask                        | No         |
-| `ics4` | 16×16 4-bit icon                        | No         |
-| `ics8` | 16x16 8-bit icon                        | No         |
-| `is32` | 16×16 24-bit icon                       | Yes        |
-| `s8mk` | 16x16 8-bit mask                        | Yes        |
-| `icl4` | 32×32 4-bit icon                        | No         |
-| `icl8` | 32×32 8-bit icon                        | No         |
-| `il32` | 32x32 24-bit icon                       | Yes        |
-| `l8mk` | 32×32 8-bit mask                        | Yes        |
-| `ich#` | 48×48 1-bit mask                        | No         |
-| `ich4` | 48×48 4-bit icon                        | No         |
-| `ich8` | 48×48 8-bit icon                        | No         |
-| `ih32` | 48×48 24-bit icon                       | Yes        |
-| `h8mk` | 48×48 8-bit mask                        | Yes        |
-| `it32` | 128×128 24-bit icon                     | Yes        |
-| `t8mk` | 128×128 8-bit mask                      | Yes        |
-| `icp4` | 16x16 32-bit PNG/JP2 icon               | PNG only   |
-| `icp5` | 32x32 32-bit PNG/JP2 icon               | PNG only   |
-| `icp6` | 64x64 32-bit PNG/JP2 icon               | PNG only   |
-| `ic07` | 128x128 32-bit PNG/JP2 icon             | PNG only   |
-| `ic08` | 256×256 32-bit PNG/JP2 icon             | PNG only   |
-| `ic09` | 512×512 32-bit PNG/JP2 icon             | PNG only   |
-| `ic10` | 512x512@2x "retina" 32-bit PNG/JP2 icon | PNG only   |
-| `ic11` | 16x16@2x "retina" 32-bit PNG/JP2 icon   | PNG only   |
-| `ic12` | 32x32@2x "retina" 32-bit PNG/JP2 icon   | PNG only   |
-| `ic13` | 128x128@2x "retina" 32-bit PNG/JP2 icon | PNG only   |
-| `ic14` | 256x256@2x "retina" 32-bit PNG/JP2 icon | PNG only   |
+### Icns Support
+
+| OSType | Description                                  | Supported?   |
+|--------|----------------------------------------------|--------------|
+| `ICON` | 32×32 1-bit entry                            | No           |
+| `ICN#` | 32×32 1-bit entry with 1-bit mask            | No           |
+| `icm#` | 16×12 1-bit entry with 1-bit mask            | No           |
+| `icm4` | 16×12 4-bit entry                            | No           |
+| `icm8` | 16×12 8-bit entry                            | No           |
+| `ics#` | 16×16 1-bit mask                             | No           |
+| `ics4` | 16×16 4-bit entry                            | No           |
+| `ics8` | 16x16 8-bit entry                            | No           |
+| `is32` | 16×16 24-bit entry                           | Yes          |
+| `s8mk` | 16x16 8-bit mask                             | Yes          |
+| `icl4` | 32×32 4-bit entry                            | No           |
+| `icl8` | 32×32 8-bit entry                            | No           |
+| `il32` | 32x32 24-bit entry                           | Yes          |
+| `l8mk` | 32×32 8-bit mask                             | Yes          |
+| `ich#` | 48×48 1-bit mask                             | No           |
+| `ich4` | 48×48 4-bit entry                            | No           |
+| `ich8` | 48×48 8-bit entry                            | No           |
+| `ih32` | 48×48 24-bit entry                           | Yes          |
+| `h8mk` | 48×48 8-bit mask                             | Yes          |
+| `it32` | 128×128 24-bit entry                         | Yes          |
+| `t8mk` | 128×128 8-bit mask                           | Yes          |
+| `icp4` | 16x16 32-bit `png`/`jp2` entry               | `png` only   |
+| `icp5` | 32x32 32-bit `png`/`jp2` entry               | `png` only   |
+| `icp6` | 64x64 32-bit `png`/`jp2` entry               | `png` only   |
+| `ic07` | 128x128 32-bit `png`/`jp2` entry             | `png` only   |
+| `ic08` | 256×256 32-bit `png`/`jp2` entry             | `png` only   |
+| `ic09` | 512×512 32-bit `png`/`jp2` entry             | `png` only   |
+| `ic10` | 512x512@2x "retina" 32-bit `png`/`jp2` entry | `png` only   |
+| `ic11` | 16x16@2x "retina" 32-bit `png`/`jp2` entry   | `png` only   |
+| `ic12` | 32x32@2x "retina" 32-bit `png`/`jp2` entry   | `png` only   |
+| `ic13` | 128x128@2x "retina" 32-bit `png`/`jp2` entry | `png` only   |
+| `ic14` | 256x256@2x "retina" 32-bit `png`/`jp2` entry | `png` only   |
 
 ## Image Formats
 
-| Format | Supported?                                                    | 
-|--------|---------------------------------------------------------------| 
-| `PNG`  | All supported color types                                     | 
-| `JPEG` | Baseline and progressive                                      | 
-| `GIF`  | Yes                                                           | 
-| `BMP`  | Yes                                                           | 
-| `ICO`  | Yes                                                           | 
-| `TIFF` | Baseline(no fax support), `LZW`, PackBits                     | 
-| `WEBP` | Lossy(Luma channel only)                                      | 
-| `PNM ` | `PBM`, `PGM`, `PPM`, standard `PAM`                           |
-| `SVG`  | [Limited](https://github.com/GarkGarcia/icon-pie#svg-support) |
+This are the formats **IconPie** can use as input:
 
-### SVG Support
+| Format | Supported?                                | 
+|--------|-------------------------------------------| 
+| `png`  | All supported color types                 | 
+| `jpeg` | Baseline and progressive                  | 
+| `gif`  | Yes                                       | 
+| `bmp`  | Yes                                       | 
+| `ico`  | Yes                                       | 
+| `tiff` | Baseline(no fax support), `lzw`, PackBits | 
+| `webp` | Lossy(Luma channel only)                  | 
+| `pnm ` | `pbm`, `pgm`, `ppm`, standard `pma`       |
+| `svg`  | Limited                                   |
 
-**IconPie** uses the [`nsvg`](https://crates.io/crates/nsvg) crate to rasterize `.svg` files. 
+### Svg Support
+
+**IconPie** uses the [`nsvg`](https://crates.io/crates/nsvg) crate to rasterize `svg` files. 
 According to the authors of the crate:
 
 > Like NanoSVG, the rasterizer only renders flat filled shapes. It is not particularly fast or 
