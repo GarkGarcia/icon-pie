@@ -49,7 +49,7 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 ```$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version```
 
 * `-e <options>`          Specify an entry's options.
-* `-r <filter>`           Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified the app defaults to `nearest`.
+* `-r <filter>`           Specify a re-sampling filter: `nearest`, `linear` or `cubic`. Defaults to `nearest`.
 * `-ico [<output path>]`  Outputs to an `.ico` file. If no output path is specified the app outputs to `stdout`.
 * `-icns [<output path>]` Outputs to an `.icns` file. If no output path is specified the app outputs to `stdout`.
 * `-png [<output path>]`  Outputs a `.png` sequence as a `.tar` file. If no output path is specified the app outputs to `stdout`.
