@@ -52,13 +52,13 @@ const TITLE: &str = r"
  \___/\___\___/|_| |_\_|   |_|\___|";
 const USAGE: &str = "$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version";
 const EXAMPLES: [&str;3] = [
-    "$ icon-pie -e small.svg 16 20 24 -e big.png 32 64 -ico output.ico",
-    "$ icon-pie -e image.png 32 64 48 -r linear -png output.tar",
-    "$ echo Here's an ICNS file: ${ icon-pie -e image.jpg 16 32 64 -r cubic -icns | hexdump }"
+    "$ icon-pie -e big.svg 32 64 128 -ico icon.ico",
+    "$ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns",
+    "$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -icns icon.icns"
 ];
 
 const COMMANDS: [&str;7] = [
-    "Specify an entry's options.",
+    "Specify an entry's source image, target sizes and resampling filter (optional).",
     "Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified the app defaults to `nearest`.",
     "Outputs to an `.ico` file. If no output path is specified the app outputs to `stdout`.",
     "Outputs to an `.icns` file. If no output path is specified the app outputs to `stdout`.",

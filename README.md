@@ -62,7 +62,7 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 
 ```$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version```
 
-* `-e <options>` Specify an entry's options.
+* `-e <options>` Specify an entry's source image, target sizes and resampling filter (optional).
 * `-r <filter>` Specify a resampling filter: `nearest`, `linear` or `cubic`. Defaults to `nearest`.
 * `-ico [<output path>]` Outputs to an `.ico` file. If no output path is specified the app outputs to 
   `stdout`.
@@ -75,9 +75,41 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 
 ## Examples
 
-* `$ icon-pie -e small.svg 16 20 24 -e big.png 32 64 -ico output.ico`
-* `$ icon-pie -e image.png 32 64 48 -r linear -png output.tar`
-* `$ echo Here's an ICNS file: ${ icon-pie -e image.jpg 16 32 64 -r cubic -icns | hexdump }`
+Let's say you have the following files saved at your file system.
+
+![Source Files](examples/sources.png)
+
+We'll walk trought some practical examples of **IconPie** usage.
+
+### Simple Usage
+
+> **IconPie**, take `big.svg`, resize it to _32x32_, _64x64_ and _128x128_. Then save it at `icon.ico`.
+
+```
+$ icon-pie -e big.svg 32 64 128 -ico icon.ico
+```
+
+![Example 1](examples/example_1.png)
+
+### Sampling From Multiple Files
+
+> **IconPie**, take `small.png`, resize it to _32x32_ and _64x64_. Then take `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.icns`.
+
+```
+$ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns
+```
+
+![Example 2](examples/example_2.png)
+
+### Specifying a Resampling Filter
+
+> **IconPie**, take `small.png`, resize it to _32x32_ and _64x64_ **_using linear interpolation_**. Then take `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.tar` as a `png` sequence.
+
+```
+$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -icns icon.icns
+```
+
+![Example 3](examples/example_3.png)
 
 # Support
 
