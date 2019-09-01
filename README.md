@@ -34,7 +34,7 @@ those re-scaled entries into an icon.
 
 When re-scaling pictures, **IconPie** preserves their original aspect-ratios. It also ensures that 
 the all re-scaled images are square, by adding transparent borders if necessary. If the picture 
-presents a transparent backaground, the transparency is preserved in the re-scaled images.
+presents a transparent background, the transparency is preserved in the re-scaled images.
 
 ![Adding Transparent Borders](examples/borders.png)
 
