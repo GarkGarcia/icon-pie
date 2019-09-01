@@ -22,25 +22,24 @@ those re-scaled entries into an icon.
 
 ## How does it do it?
 
+### Re-scaling
+
 When re-scaling pictures, **IconPie** preserves it's original aspect ratio. It also ensures that 
 the final entry is a square picture, by adding transparent borders if necessary.
 
 ![Adding Transparent Borders](examples/borders.png)
 
-**IconPie** uses 
-_[nearest-neighbor interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ 
-for _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ by default, optimizing for 
-small-resolution images. Furthermore, when using _nearest-neighbor interpolation_, it only 
-up-scales images on an integer scale, preserving as much detail as possible.
+### Interpolation
 
-![Default Resample](examples/default_resample.png)
+- With images in _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ (JPEG, PNG, ...), **IconPie** uses _[nearest-neighbor interpolation (https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ by default, optimizing for  small-resolution images.
 
-You can choose to opt-out of the default resampling scheme for _raster graphics_ by specifying a 
-resampling filter with the `-r` flag, as described in the **[Usage](#Usage)** section.
+  Furthermore, when using _nearest-neighbor interpolation_, it only up-scales images on an integer scale, preserving as much detail as possible.
 
-**IconPie** _always_ uses _[linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)_ 
-for _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_, regardless of any specified 
-resampling filter.
+  ![Default Resample](examples/default_resample.png)
+
+  You can choose to opt-out of the default resampling scheme for _raster graphics_ by specifying a resampling filter with the `-r` flag, as described in the **[Usage](#Usage)** section.
+
+- With images in _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_ (SVG), **IconPie** _always_ uses _[linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)_ regardless of any specified resampling filter.
 
 # Usage
 
