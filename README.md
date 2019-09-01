@@ -3,12 +3,12 @@
 [![Crate](https://img.shields.io/crates/v/icon-pie.svg)](https://crates.io/crates/icon-pie)
 [![Minimum rustc version](https://img.shields.io/badge/rustc-1.32+-lightgray.svg)](https://github.com/rust-random/rand#rust-version-requirements)
 
-A simple command-line tool that generates application icons from raster graphics or vector graphics images.
+A simple command-line tool to generate application icons from raster graphics or vector graphics images.
 
 Quickly combine multiple images and create professional-looking icons for most versions of Windows, 
 macOS, iOS & Linux.
 
-Available as a single executable.
+Available as a single executable!
 
 # Overview
 
