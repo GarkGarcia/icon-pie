@@ -4,8 +4,11 @@
 [![Minimum rustc version](https://img.shields.io/badge/rustc-1.32+-lightgray.svg)](https://github.com/rust-random/rand#rust-version-requirements)
 
 A simple command-line tool for generating application icons.
+
 Quickly combine multiple images and create professional-looking icons for most versions of Windows, 
 macOS, iOS & Linux.
+
+Available as a single executable.
 
 # Overview
 
