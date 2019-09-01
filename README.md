@@ -93,7 +93,8 @@ $ icon-pie -e big.svg 32 64 128 -ico icon.ico
 
 ### Sampling From Multiple Files
 
-> Take `small.png`, resize it to _32x32_ and _64x64_. Then take `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.icns`.
+> Take `small.png`, resize it to _32x32_ and _64x64_. Then take `big.svg` and resize it _128x128_. 
+> Then combine the re-scaled entries in `icon.icns`.
 
 ```
 $ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns
@@ -103,7 +104,8 @@ $ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns
 
 ### Specifying a Resampling Filter
 
-> Take `small.png`, resize it to _32x32_ and _64x64_ **_using linear interpolation_**. Then take `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.tar` as a `png` sequence.
+> Take `small.png`, resize it to _32x32_ and _64x64_ **_using linear interpolation_**. Then take 
+> `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.tar` as a `png` sequence.
 
 ```
 $ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -png icon.tar
@@ -189,3 +191,8 @@ Help would be appreciated.
 
 Licensed under MIT license([LICENSE-MIT](https://github.com/GarkGarcia/icon-pie/blob/master/LICENSE) 
 or http://opensource.org/licenses/MIT).
+
+# Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the 
+work by you shall be licensed as above, without any additional terms or conditions.
