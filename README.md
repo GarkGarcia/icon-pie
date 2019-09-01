@@ -24,8 +24,8 @@ those re-scaled entries into an icon.
 
 ### Re-scaling
 
-When re-scaling pictures, **IconPie** preserves it's original aspect ratio. It also ensures that 
-the final entry is a square picture, by adding transparent borders if necessary.
+When re-scaling pictures, **IconPie** preserves their original aspect-ratios. It also ensures that 
+the all re-scaled pictures are square, by adding transparent borders if necessary.
 
 ![Adding Transparent Borders](examples/borders.png)
 
@@ -48,11 +48,21 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 ```$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version```
 
 * `-e <options>`          Specify an entry's options.
-* `-r <filter>`           Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified the app defaults to `nearest`.
-* `-ico [<output path>]`  Outputs to an `.ico` file. If no output path is specified the app outputs to `stdout`.
-* `-icns [<output path>]` Outputs to an `.icns` file. If no output path is specified the app outputs to `stdout`.
-* `-png [<output path>]`  Outputs a `.png` sequence as a `.tar` file. If no output path is specified the app outputs to `stdout`.
+
+* `-r <filter>`           Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is 
+  specified the app defaults to `nearest`.
+
+* `-ico [<output path>]`  Outputs to an `.ico` file. If no output path is specified the app outputs to 
+  `stdout`.
+
+* `-icns [<output path>]` Outputs to an `.icns` file. If no output path is specified the app outputs 
+  to `stdout`.
+
+* `-png [<output path>]`  Outputs a `.png` sequence as a `.tar` file. If no output path is specified the 
+  app outputs to `stdout`.
+
 * `-h`, `--help`          Help.
+
 * `-v`, `--version`       Display version information.
 
 ## Examples
@@ -69,21 +79,7 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 * `ICNS`
 * `PNG Sequence`
 
-## Image Formats
-
-| Format | Supported?                                                    | 
-|--------|---------------------------------------------------------------| 
-| `PNG`  | All supported color types                                     | 
-| `JPEG` | Baseline and progressive                                      | 
-| `GIF`  | Yes                                                           | 
-| `BMP`  | Yes                                                           | 
-| `ICO`  | Yes                                                           | 
-| `TIFF` | Baseline(no fax support), `LZW`, PackBits                     | 
-| `WEBP` | Lossy(Luma channel only)                                      | 
-| `PNM ` | `PBM`, `PGM`, `PPM`, standard `PAM`                           |
-| `SVG`  | [Limited](https://github.com/GarkGarcia/icon-pie#svg-support) |
-
-## ICNS Support
+### ICNS Support
 
 | OSType | Description                             | Supported? |
 |--------|-----------------------------------------|------------|
@@ -120,14 +116,32 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 | `ic13` | 128x128@2x "retina" 32-bit PNG/JP2 icon | PNG only   |
 | `ic14` | 256x256@2x "retina" 32-bit PNG/JP2 icon | PNG only   |
 
-## SVG Support
+## Image Formats
 
-**IconPie** uses the `nsvg` crate to rasterize `.svg` files. According to the authors of the crate:
+| Format | Supported?                                                    | 
+|--------|---------------------------------------------------------------| 
+| `PNG`  | All supported color types                                     | 
+| `JPEG` | Baseline and progressive                                      | 
+| `GIF`  | Yes                                                           | 
+| `BMP`  | Yes                                                           | 
+| `ICO`  | Yes                                                           | 
+| `TIFF` | Baseline(no fax support), `LZW`, PackBits                     | 
+| `WEBP` | Lossy(Luma channel only)                                      | 
+| `PNM ` | `PBM`, `PGM`, `PPM`, standard `PAM`                           |
+| `SVG`  | [Limited](https://github.com/GarkGarcia/icon-pie#svg-support) |
 
-> Like NanoSVG, the rasterizer only renders flat filled shapes. It is not particularly fast or accurate, but it is a simple way to bake vector graphics into textures.
+### SVG Support
 
-The author of `icon-pie` is inclined to search for alternatives to `nsvg` if inquired to. Help would be appreciated.
+**IconPie** uses the [`nsvg`](https://crates.io/crates/nsvg) crate to rasterize `.svg` files. 
+According to the authors of the crate:
+
+> Like NanoSVG, the rasterizer only renders flat filled shapes. It is not particularly fast or 
+> accurate, but it is a simple way to bake vector graphics into textures.
+
+The author of `icon-pie` is inclined to search for alternatives to `nsvg` if inquired to. 
+Help would be appreciated.
 
 # License
 
-Licensed under MIT license([LICENSE-MIT](https://github.com/GarkGarcia/icon-pie/blob/master/LICENSE) or http://opensource.org/licenses/MIT).
+Licensed under MIT license([LICENSE-MIT](https://github.com/GarkGarcia/icon-pie/blob/master/LICENSE) 
+or http://opensource.org/licenses/MIT).
