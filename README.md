@@ -31,7 +31,7 @@ the all re-scaled pictures are square, by adding transparent borders if necessar
 
 ### Interpolation
 
-- With images in _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ (JPEG, PNG, ...), **IconPie** uses _[nearest-neighbor interpolation (https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ by default, optimizing for  small-resolution images.
+- With images in _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ (JPEG, PNG, ...), **IconPie** uses _[nearest-neighbor interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ by default, optimizing for  small-resolution images.
 
   Furthermore, when using _nearest-neighbor interpolation_, it only up-scales images on an integer scale, preserving as much detail as possible.
 
