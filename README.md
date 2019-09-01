@@ -8,7 +8,12 @@ A simple command-line tool to generate application icons from raster graphics or
 Quickly combine multiple images and create professional-looking icons for most versions of Windows, 
 macOS, iOS & Linux.
 
-Available as a single executable!
+# Features
+
+* Simple interface.
+* Sane defaults for the domain of icon composition.
+* Supports outputting to `stdout`, allowing for piping.
+* Available as a single executable.
 
 # Overview
 
