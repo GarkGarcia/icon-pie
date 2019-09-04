@@ -1,6 +1,5 @@
 use crate::{Output};
 use std::io;
-use icon_baker::image::ImageError;
 
 mod show;
 
@@ -18,25 +17,23 @@ pub enum SyntaxError {
 }
 
 impl Error {
-    pub fn exit_with(&self) -> io::Error {
+    pub fn exit_with(self) -> io::Error {
         match &self {
             Error::Syntax(err)    => show::syntax(err),
             Error::IconBaker(err) => show::icon_baker(err),
             Error::Io(err, path)  => show::io(err, path.clone())
         }
 
-        self.to_io()
+        self.into()
     }
+}
 
-    pub fn to_io(&self) -> io::Error {
-        match &self {
+impl Into<io::Error> for Error {
+    fn into(self) -> io::Error {
+        match self {
             Error::Syntax(_)  => io::Error::from(io::ErrorKind::InvalidInput),
             Error::Io(err, _) => io::Error::from(err.kind()),
-            Error::IconBaker(err) => match err {
-                icon_baker::Error::InvalidSize(size) => unimplemented!("{}", size),
-                icon_baker::Error::Image(ImageError::DimensionError) => unimplemented!(),
-                _ => io::Error::from(io::ErrorKind::Other)
-            }
+            Error::IconBaker(err) => err.into()
         }
     }
 }

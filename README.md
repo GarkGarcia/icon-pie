@@ -105,7 +105,8 @@ $ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns
 ### Specifying a Resampling Filter
 
 > Take `small.png`, resize it to _32x32_ and _64x64_ **_using linear interpolation_**. Then take 
-> `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.tar` as a `png` sequence.
+> `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.tar` as a `png` 
+> sequence.
 
 ```
 $ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -png icon.tar
