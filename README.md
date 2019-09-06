@@ -1,12 +1,13 @@
 # IconPie
 
 [![Crate](https://img.shields.io/crates/v/icon-pie.svg)](https://crates.io/crates/icon-pie)
-[![Minimum rustc version](https://img.shields.io/badge/rustc-1.32+-lightgray.svg)](https://github.com/rust-random/rand#rust-version-requirements)
+![Minimum rustc version](https://img.shields.io/badge/rustc-1.37+-lightgray.svg)
+![License](https://img.shields.io/github/license/GarkGarcia/icon-pie)
 
 A simple command-line tool to generate application icons from raster graphics or vector graphics images.
 
 Quickly combine multiple images and create professional-looking icons for most versions of Windows, 
-macOS, iOS & Linux.
+macOS, iOS & Linux. Powered by **[IconBaker](https://crates.io/crates/icon_baker)**.
 
 # Features
 
@@ -54,7 +55,7 @@ resampling filter with the `-r` flag, as described in the **[Usage](#Usage)** se
 
 For _[vector graphics](https://en.wikipedia.org/wiki/Vector_graphics)_ (`svg`), 
 **IconPie** _always_ uses _[linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)_ 
-regardless of any specified resampling filter.
+regardless of any specified resampling filter. _Vector graphics_ are also rasterized with antialiasing.
 
 # Usage
 
@@ -62,16 +63,16 @@ The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as fol
 
 ```$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version```
 
-* `-e <options>` Specify an entry's source image, target sizes and resampling filter (optional).
-* `-r <filter>` Specify a resampling filter: `nearest`, `linear` or `cubic`. Defaults to `nearest`.
-* `-ico [<output path>]` Outputs to an `.ico` file. If no output path is specified the app outputs to 
+* `-e <options>` — Specify an entry's source image, target sizes and resampling filter (optional).
+* `-r <filter>` — Specify a resampling filter: `nearest`, `linear` or `cubic`. Defaults to `nearest`.
+* `-ico [<output path>]` — Outputs to an `.ico` file. If no output path is specified the app outputs to 
   `stdout`.
-* `-icns [<output path>]` Outputs to an `.icns` file. If no output path is specified the app outputs 
+* `-icns [<output path>]` — Outputs to an `.icns` file. If no output path is specified the app outputs 
   to `stdout`.
-* `-png [<output path>]` Outputs a `.png` sequence as a `.tar` file. If no output path is specified the 
+* `-png [<output path>]` — Outputs a `.png` sequence as a `.tar` file. If no output path is specified the 
   app outputs to `stdout`.
-* `-h`, `--help` Help.
-* `-v`, `--version` Display version information.
+* `-h`, `--help` — Help.
+* `-v`, `--version` — Display version information.
 
 ## Examples
 
@@ -165,28 +166,17 @@ This are the file formats **IconPie** can output to:
 
 This are the formats **IconPie** can use as input:
 
-| Format | Supported?                                | 
-|--------|-------------------------------------------| 
-| `png`  | All supported color types                 | 
-| `jpeg` | Baseline and progressive                  | 
-| `gif`  | Yes                                       | 
-| `bmp`  | Yes                                       | 
-| `ico`  | Yes                                       | 
-| `tiff` | Baseline(no fax support), `lzw`, PackBits | 
-| `webp` | Lossy(Luma channel only)                  | 
-| `pnm ` | `pbm`, `pgm`, `ppm`, standard `pma`       |
-| `svg`  | Limited                                   |
-
-### Svg Support
-
-**IconPie** uses the [`nsvg`](https://crates.io/crates/nsvg) crate to rasterize `svg` files. 
-According to the authors of the crate:
-
-> Like NanoSVG, the rasterizer only renders flat filled shapes. It is not particularly fast or 
-> accurate, but it is a simple way to bake vector graphics into textures.
-
-The author of `icon-pie` is inclined to search for alternatives to `nsvg` if inquired to. 
-Help would be appreciated.
+| Format | Supported?                                                             |
+|--------|------------------------------------------------------------------------|
+| `png`  | All supported color types                                              |
+| `jpeg` | Baseline and progressive                                               |
+| `gif`  | Yes                                                                    |
+| `bmp`  | Yes                                                                    |
+| `ico`  | Yes                                                                    |
+| `tiff` | Baseline(no fax support), `lzw`, PackBits                              |
+| `webp` | Lossy(Luma channel only)                                               |
+| `pnm ` | `pbm`, `pgm`, `ppm`, standard `pma`                                    |
+| `svg`  | [Static SVG Full 1.1](https://github.com/RazrFalcon/resvg#svg-support) |
 
 # License
 
