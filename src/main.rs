@@ -70,7 +70,7 @@ const COMMANDS: [&str;7] = [
 fn main() -> io::Result<()> {
     match parse::args() {
         Ok(cmd)  => command(cmd),
-        Err(err) => Err(err.exit_with())
+        Err(err) => Err(exit(err))
     }
 }
 
@@ -85,8 +85,9 @@ fn command(cmd: Command) -> io::Result<()> {
 }
 
 fn icon(entries: &Entries, icon_type: IconType, output: Output) -> io::Result<()> {
-    eval::icon(&entries, icon_type, &output)
-        .map_err(|err| err.exit_with())?;
+    if let Err(err) = eval::icon(&entries, icon_type, &output) {
+        return Err(exit(err));
+    }
 
     if let Output::Path(path) = output {
         println!(
@@ -108,7 +109,8 @@ fn help() {
         style(VERSION).with(Color::Green)
     );
 
-    println!("\n{} {}\n\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}",
+    println!(
+        "\n{} {}\n\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}",
         style("Usage:").with(Color::Blue),
         style(USAGE).with(Color::Green),
         style("   -e <options>          ").with(Color::Green),
@@ -127,7 +129,8 @@ fn help() {
         COMMANDS[6]
     );
 
-    println!("\n{}\n   {}\n   {}\n   {}\n",
+    println!(
+        "\n{}\n   {}\n   {}\n   {}\n",
         style("Examples:").with(Color::Blue),
         style(EXAMPLES[0]).with(Color::Green),
         style(EXAMPLES[1]).with(Color::Green),
@@ -140,12 +143,18 @@ fn version() {
     println!("icon-pie v{}", VERSION);
 }
 
+#[inline]
+fn exit(err: error::Error) -> io::Error {
+   eprintln!("{}", err);
+   err.into() 
+}
+
 fn args() -> Vec<String> {
     let output: Vec<String> = env::args_os()
         .map(|os_str| String::from(os_str.to_string_lossy()))
         .collect();
 
-    // Refactor this
+    // TODO Refactor this
     if output.len() > 0 {
         if let parse::Token::Path(_) = parse::Token::from(output[0].as_ref()) {
             return Vec::from(&output[1..]);

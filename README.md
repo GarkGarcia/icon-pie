@@ -61,7 +61,9 @@ regardless of any specified resampling filter. _Vector graphics_ are also raster
 
 The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as follows:
 
-```$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version```
+```
+$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version
+```
 
 * `-e <options>` — Specify an entry's source image, target sizes and resampling filter (optional).
 * `-r <filter>` — Specify a resampling filter: `nearest`, `linear` or `cubic`. Defaults to `nearest`.
