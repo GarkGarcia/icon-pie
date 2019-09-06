@@ -1,7 +1,10 @@
 [package]
 name = "icon-pie"
 version = "0.1.4-beta"
-authors = ["Gark Garcia <thiago.brevidelli.garcia@protonmail.com>"]
+authors = [
+    "Thiago Brevidelli <thiago.brevidelli.garcia@protonmail.com>",
+    "Nicolas Girard <girard.nicolas@gmail.com>"
+]
 edition = "2018"
 description = "A simple command-line tool for generating application icons."
 license-file = "LICENSE"
