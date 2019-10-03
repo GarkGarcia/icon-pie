@@ -4,9 +4,10 @@ extern crate crossterm;
 mod parse;
 mod eval;
 mod error;
+mod command;
 
 use std::{env, io, path::{PathBuf}};
-use icon_baker::Size;
+use icon_baker::{resample, image::DynamicImage, SourceImage};
 use crossterm::{style, Color};
 
 pub enum Command {
@@ -25,7 +26,7 @@ pub enum Output {
 pub enum IconType {
     Ico,
     Icns,
-    PngSequence
+    Favicon
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -35,7 +36,7 @@ pub enum ResamplingFilter {
     Cubic
 }
 
-pub type Entries = Vec<(Size, PathBuf, ResamplingFilter)>;
+pub type Entries = Vec<(u32, PathBuf, ResamplingFilter)>;
 
 #[macro_export]
 macro_rules! syntax {
@@ -51,11 +52,6 @@ const TITLE: &str = r"
  _| || (_| (_) | | | | |   | |  __/
  \___/\___\___/|_| |_\_|   |_|\___|";
 const USAGE: &str = "$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version";
-const EXAMPLES: [&str;3] = [
-    "$ icon-pie -e big.svg 32 64 128 -ico icon.ico",
-    "$ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns",
-    "$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -png icon.tar"
-];
 
 const COMMANDS: [&str;7] = [
     "Specify an entry's source image, target sizes and resampling filter (optional).",
@@ -66,6 +62,22 @@ const COMMANDS: [&str;7] = [
     "Help.",
     "Display version information.",
 ];
+
+const EXAMPLES: [&str;3] = [
+    "$ icon-pie -e big.svg 32 64 128 -ico icon.ico",
+    "$ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns",
+    "$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -png icon.tar"
+];
+
+impl ResamplingFilter {
+    pub fn call(&self, source: &SourceImage, size: u32) -> io::Result<DynamicImage> {
+        match self {
+            ResamplingFilter::Nearest => resample::nearest(source, size),
+            ResamplingFilter::Linear  => resample::linear(source, size),
+            ResamplingFilter::Cubic   => resample::cubic(source, size)
+        }
+    }
+}
 
 fn main() -> io::Result<()> {
     match parse::args() {
@@ -110,7 +122,7 @@ fn help() {
     );
 
     println!(
-        "\n{} {}\n\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}",
+        "\n{}\n   {}\n\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}",
         style("Usage:").with(Color::Blue),
         style(USAGE).with(Color::Green),
         style("   -e <options>          ").with(Color::Green),

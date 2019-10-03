@@ -1,6 +1,7 @@
 use std::{io, fmt::{self, Write}, path::PathBuf};
 use crate::Output;
 use super::SyntaxError;
+use icon_baker::AsSize;
 use crossterm::{style, Color};
 
 pub fn syntax<W: Write>(w: &mut W, err: &SyntaxError) -> fmt::Result {
@@ -28,16 +29,21 @@ pub fn syntax<W: Write>(w: &mut W, err: &SyntaxError) -> fmt::Result {
     }
 }
 
-pub fn icon_baker<W: Write>(w: &mut W, err: &icon_baker::Error) -> fmt::Result {
-    if let icon_baker::Error::InvalidSize(size) = err {
-        write!(
+pub fn icon_baker<W: Write, K: AsSize>(w: &mut W, err: &icon_baker::Error<K>) -> fmt::Result {
+    match err {
+        icon_baker::Error::AlreadyIncluded(key) => write!(
             w,
-            "{0} The specified file format does not support {1}x{1} icons.",
-            style("[Invalid Size]").with(Color::Red),
-            size
-        )
-    } else {
-        write!(w, "{} {}", style("[Unknown Error]").with(Color::Red), format(err.to_string()))
+            "{0} The icon already contains a {1}x{1} entry.",
+            style("[Already Included]").with(Color::Red),
+            key.as_size()
+        ),
+        icon_baker::Error::Io(err) => write!(
+            w,
+            "{} {}",
+            style("[IO Error]").with(Color::Red),
+            format(err.to_string())
+        ),
+        icon_baker::Error::MismatchedDimensions(_, _) => unimplemented!()
     }
 }
 

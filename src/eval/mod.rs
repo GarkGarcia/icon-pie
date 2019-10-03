@@ -1,6 +1,6 @@
 use std::{io::{self, stdout}, fs, path::PathBuf, collections::HashMap};
 use crate::{error::Error, Output, IconType, ResamplingFilter, Entries};
-use icon_baker::{resample, Icon, Ico, Icns, PngSequence, SourceImage};
+use icon_baker::{resample, Icon, ico::Ico, icns::Icns, favicon::Favicon, SourceImage};
 
 macro_rules! resample {
     ($r:expr) => {
@@ -29,9 +29,9 @@ macro_rules! not_found {
 
 pub fn icon(entries: &Entries, icon_type: IconType, output: &Output) -> Result<(), Error> {
     match icon_type {
-        IconType::Ico         => write(&mut get_icon::<Ico >(entries)?,        output),
-        IconType::Icns        => write(&mut get_icon::<Icns>(entries)?,        output),
-        IconType::PngSequence => write(&mut get_icon::<PngSequence>(entries)?, output)
+        IconType::Ico     => write(&mut get_icon::<Ico >(entries)?,    output),
+        IconType::Icns    => write(&mut get_icon::<Icns>(entries)?,    output),
+        IconType::Favicon => write(&mut get_icon::<Favicon>(entries)?, output)
     }
 }
 
