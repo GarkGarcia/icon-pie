@@ -1,4 +1,4 @@
-use crate::{error::Error, Entries, Output, TITLE, VERSION, USAGE, COMMANDS, EXAMPLES};
+use crate::{error::{Error, FileError}, Entries, Output, TITLE, VERSION, USAGE, COMMANDS, EXAMPLES};
 use std::{io::{self, stdout}, fs, path::PathBuf, collections::HashMap};
 use icon_baker::{ico::Ico, icns::Icns, favicon::Favicon, Icon, SourceImage};
 use crossterm::{style, Color};
@@ -6,26 +6,17 @@ use crossterm::{style, Color};
 pub enum Command {
     Help,
     Version,
-    Ico(Entries, Output),
-    Icns(Entries, Output),
-    Favicon(Entries, Output)
-}
-
-macro_rules! io {
-    ($err:expr) => {
-        Error::Io($err, Output::Stdout)
-    };
-    ($err:expr, $path:expr) => {
-        Error::Io($err, Output::Path($path))
-    };
+    Ico(Entries<Ico>, Output),
+    Icns(Entries<Icns>, Output),
+    Favicon(Entries<Favicon>, Output)
 }
 
 impl Command {
     pub fn eval(&self) -> Result<(), Error> {
         match self {
-            Command::Icns(entries, output) => write(&mut parse_icon::<Ico>(entries)?, output)?,
-            Command::Ico(entries, output) => write(&mut parse_icon::<Icns>(entries)?, output)?,
-            Command::Favicon(entries, output) => write(&mut parse_icon::<Favicon>(entries)?, output)?,
+            Command::Icns(entries, output) => icon::<Icns>(entries, output)?,
+            Command::Ico(entries, output) => icon::<Ico>(entries, output)?,
+            Command::Favicon(entries, output) => icon::<Favicon>(entries, output)?,
             Command::Help => help(),
             Command::Version => version()
         }
@@ -34,43 +25,47 @@ impl Command {
     }
 }
 
-fn parse_icon<I: Icon>(entries: &Entries) -> Result<I, Error> {
+fn icon<I: Icon>(entries: &Entries<I>, output: &Output) -> Result<(), Error> {
     let mut icon = I::new();
     let mut source_map = HashMap::with_capacity(entries.len());
 
-    for &(size, path, filter) in entries {
+    for &(key, path, filter) in entries {
         let src = source_map.entry(path)
             .or_insert(source_image(&path)?);
 
-        let key = match I::Key::new(size) {
-            Some(key) => key,
-            None => return Err(Error::InvalidDimensions(size))
-        };
-
-        icon.add_entry(|src, size| filter.call(src, size), src, key)?;
+        if let Err(err) = icon.add_entry(|src, size| filter.call(src, size), src, key) {
+            return Err(Error::from_baker(err, path.clone()));
+        }
     }
 
-    Ok(icon)
+    match output {
+        Output::Path(path) => {
+            let mut file = fs::File::create(path.clone())
+                .map_err(|err| Error::Output(err, *output))?;
+
+            icon.write(&mut file)
+                .map_err(|err| Error::Output(err, *output))?;
+
+            println!(
+                "{} Icon saved at {}.",
+                style("[Success]").with(Color::Green),
+                style(path.display()).with(Color::Blue)
+            );
+            
+            Ok(())
+        },
+        Output::Stdout => icon.write(&mut stdout())
+            .map_err(|err| Error::Output(err, Output::Stdout))
+    }
 }
 
 #[inline]
 fn source_image(path: &PathBuf) -> Result<SourceImage, Error> {
     match SourceImage::open(path) {
         Some(src) => Ok(src),
-        None => Err(io!(io::Error::from(io::ErrorKind::NotFound), path.clone()))
-    }
-}
-
-fn write<I: Icon>(icon: &mut I, output: &Output) -> Result<(), Error> {
-    match output {
-        Output::Path(path) => match fs::File::create(path.clone()) {
-            Ok(mut file) => icon.write(&mut file)
-                .map_err(|err| io!(err, path.clone())),
-
-            Err(err) => Err(io!(err, path.clone()))
-        },
-        Output::Stdout => icon.write(&mut stdout())
-            .map_err(|err| io!(err))
+        None => Err(
+            Error::File(FileError(io::Error::from(io::ErrorKind::NotFound), path.clone()))
+        )
     }
 }
 

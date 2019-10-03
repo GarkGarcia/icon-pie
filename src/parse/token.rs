@@ -1,46 +1,51 @@
 use std::path::PathBuf;
 use crate::ResamplingFilter;
-use icon_baker::Size;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Token {
     Flag(Flag),
+    Command(Cmd),
     Path(PathBuf),
-    Size(Size),
+    Size(u32),
     Filter(ResamplingFilter)
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum Flag {
-    Entry,
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum Cmd {
     Ico,
     Icns,
-    Png,
+    Favicon
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum Flag {
+    Entry,
     Help,
     Version,
-    Resample
+    Resample,
+    Output
 }
 
 impl<'a> From<&'a str> for Token {
     fn from(s: &str) -> Self {
         match s {
-            "-e"      => Token::Flag(Flag::Entry),
-            "-ico"    => Token::Flag(Flag::Ico),
-            "-icns"   => Token::Flag(Flag::Icns),
-            "-png"    => Token::Flag(Flag::Png),
-            "-r"      => Token::Flag(Flag::Resample),
+            "ico" => Token::Command(Cmd::Ico),
+            "icns" => Token::Command(Cmd::Icns),
+            "favicon" => Token::Command(Cmd::Favicon),
+            "-e" | "--entry" => Token::Flag(Flag::Entry),
+            "-r" | "--resample" => Token::Flag(Flag::Resample),
             "nearest" => Token::Filter(ResamplingFilter::Nearest),
-            "linear"  => Token::Filter(ResamplingFilter::Linear),
-            "cubic"   => Token::Filter(ResamplingFilter::Cubic),
-            "-h" | "--help"        => Token::Flag(Flag::Help),
-            "-v" | "--version"     => Token::Flag(Flag::Version),
-            _ => if let Ok(size) = s.parse::<u32>() {
-                Token::Size(size)
-            } else {
-                let mut p = PathBuf::new();
-                p.push(s);
-            
-                Token::Path(p)
+            "linear" => Token::Filter(ResamplingFilter::Linear),
+            "cubic" => Token::Filter(ResamplingFilter::Cubic),
+            "-h" | "--help" => Token::Flag(Flag::Help),
+            "-v" | "--version" => Token::Flag(Flag::Version),
+            "-o" | "--output" => Token::Flag(Flag::Output),
+            _ => {
+                if let Ok(size) = s.parse::<u32>() {
+                    Token::Size(size)
+                } else {
+                    Token::Path(PathBuf::from(s))
+                }
             }
         }
     }

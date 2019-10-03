@@ -2,31 +2,16 @@ extern crate icon_baker;
 extern crate crossterm;
 
 mod parse;
-mod eval;
 mod error;
 mod command;
 
 use std::{env, io, path::{PathBuf}};
-use icon_baker::{resample, image::DynamicImage, SourceImage};
-use crossterm::{style, Color};
-
-pub enum Command {
-    Help,
-    Version,
-    Icon(Entries, IconType, Output)
-}
+use icon_baker::{resample, image::DynamicImage, Icon, SourceImage};
 
 #[derive(Clone, Debug)]
 pub enum Output {
     Path(PathBuf),
     Stdout
-}
-
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum IconType {
-    Ico,
-    Icns,
-    Favicon
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -36,7 +21,7 @@ pub enum ResamplingFilter {
     Cubic
 }
 
-pub type Entries = Vec<(u32, PathBuf, ResamplingFilter)>;
+pub type Entries<I: Icon> = Vec<(I::Key, PathBuf, ResamplingFilter)>;
 
 #[macro_export]
 macro_rules! syntax {
@@ -80,79 +65,10 @@ impl ResamplingFilter {
 }
 
 fn main() -> io::Result<()> {
-    match parse::args() {
-        Ok(cmd)  => command(cmd),
-        Err(err) => Err(exit(err))
-    }
-}
-
-fn command(cmd: Command) -> io::Result<()> {
-    match cmd {
-        Command::Icon(entries, icon_type, output) => icon(&entries, icon_type, output)?,
-        Command::Help    => help(),
-        Command::Version => version()
-    }
-
-    Ok(())
-}
-
-fn icon(entries: &Entries, icon_type: IconType, output: Output) -> io::Result<()> {
-    if let Err(err) = eval::icon(&entries, icon_type, &output) {
-        return Err(exit(err));
-    }
-
-    if let Output::Path(path) = output {
-        println!(
-            "{} Output saved at {}.",
-            style("[Success]").with(Color::Green),
-            style(path.display()).with(Color::Blue)
-        );
-    }
-
-    Ok(())
-}
-
-#[inline]
-fn help() {
-    println!(
-        "{}\n{}{}",
-        style(TITLE).with(Color::Green),
-        style("v").with(Color::Green),
-        style(VERSION).with(Color::Green)
-    );
-
-    println!(
-        "\n{}\n   {}\n\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}",
-        style("Usage:").with(Color::Blue),
-        style(USAGE).with(Color::Green),
-        style("   -e <options>          ").with(Color::Green),
-        COMMANDS[0],
-        style("   -r <filter>           ").with(Color::Green),
-        COMMANDS[1],
-        style("   -ico [<output path>]  ").with(Color::Green),
-        COMMANDS[2],
-        style("   -icns [<output path>] ").with(Color::Green),
-        COMMANDS[3],
-        style("   -png [<output path>]  ").with(Color::Green),
-        COMMANDS[4],
-        style("   -h, --help            ").with(Color::Green),
-        COMMANDS[5],
-        style("   -v, --version         ").with(Color::Green),
-        COMMANDS[6]
-    );
-
-    println!(
-        "\n{}\n   {}\n   {}\n   {}\n",
-        style("Examples:").with(Color::Blue),
-        style(EXAMPLES[0]).with(Color::Green),
-        style(EXAMPLES[1]).with(Color::Green),
-        style(EXAMPLES[2]).with(Color::Green)
-    );
-}
-
-#[inline]
-fn version() {
-    println!("icon-pie v{}", VERSION);
+    let cmd = parse::args()
+        .map_err(exit)?;
+    
+    cmd.eval().map_err(exit)
 }
 
 #[inline]
@@ -166,12 +82,5 @@ fn args() -> Vec<String> {
         .map(|os_str| String::from(os_str.to_string_lossy()))
         .collect();
 
-    // TODO Refactor this
-    if output.len() > 0 {
-        if let parse::Token::Path(_) = parse::Token::from(output[0].as_ref()) {
-            return Vec::from(&output[1..]);
-        }
-    }
-
-    output
+    Vec::from(&output[1..])
 }

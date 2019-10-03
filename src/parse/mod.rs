@@ -1,19 +1,10 @@
 use std::{path::PathBuf, iter::{Iterator, Peekable, Enumerate}, slice::Iter};
-use crate::{Command, IconType, ResamplingFilter, Entries, Output, syntax, error::{Error, SyntaxError}};
+use crate::{command::Command, ResamplingFilter, Entries, Output, syntax, error::{Error, SyntaxError}};
 use token::{Flag};
 pub use token::Token;
 
 mod token;
 type TokenStream<'a> = Peekable<Enumerate<Iter<'a, Token>>>;
-
-macro_rules! icon {
-    ($entries:expr, $type:expr) => {
-        Command::Icon($entries, $type, Output::Stdout)
-    };
-    ($entries:expr, $type:expr, $path:expr) => {
-        Command::Icon($entries, $type, Output::Path($path))
-    };
-}
 
 pub fn args() -> Result<Command, Error> {
     let args = crate::args();
