@@ -1,7 +1,7 @@
 use crate::{command::Command,Entries, Output, syntax, error::{Error, SyntaxError}};
 use super::{filter, expect_end, add_entry, Token, TokenStream, Flag};
 use std::{path::PathBuf, iter::Iterator};
-use icon_baker::{Icon, favicon::Favicon};
+use icon_baker::{Icon, favicon::{Favicon, FaviconKey}};
 
 pub fn parse(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
     let mut entries = Vec::with_capacity(n_entries);
@@ -18,7 +18,7 @@ pub fn parse(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
     Ok(Command::Favicon(entries, Output::Stdout))
 }
 
-fn command(it: &mut TokenStream, entries: Entries<Favicon>) -> Result<Command, Error> {
+fn command(it: &mut TokenStream, entries: Entries<FaviconKey>) -> Result<Command, Error> {
     it.next();
     match it.peek() {
         Some(&(_, Token::Path(path))) => expect_end(it, Command::Favicon(entries, Output::Path(path.clone()))),
@@ -27,7 +27,7 @@ fn command(it: &mut TokenStream, entries: Entries<Favicon>) -> Result<Command, E
     }
 }
 
-fn entry_adder(it: &mut TokenStream, entries: &mut Entries<Favicon>, path: &PathBuf) -> Result<(), Error> {
+fn entry_adder(it: &mut TokenStream, entries: &mut Entries<FaviconKey>, path: &PathBuf) -> Result<(), Error> {
     // TODO Preallocate this Vec
     let mut sizes = Vec::with_capacity(0);
 

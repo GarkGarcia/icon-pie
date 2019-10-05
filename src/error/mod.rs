@@ -52,7 +52,7 @@ impl Display for Error {
                 style("[Invalid Dimensions]").with(Color::Red),
                 s
             ),
-            Error::Output(err, output) => unimplemented!(),
+            Error::Output(_err, _output) => unimplemented!(),
             Error::File(err) => err.fmt(f),
             Error::Syntax(err) => err.fmt(f),
         }

@@ -38,9 +38,9 @@ fn tokens<'a>(args: Vec<String>) -> Vec<Token> {
     args.iter().map(|arg| Token::from(arg.as_ref())).collect()
 }
 
-fn add_entry<I: Icon, F: FnMut(&mut TokenStream, &mut Entries<I>, &PathBuf) -> Result<(), Error>>(
+fn add_entry<I: Icon, F: FnMut(&mut TokenStream, &mut Entries<<I as Icon>::Key>, &PathBuf) -> Result<(), Error>>(
     it: &mut TokenStream,
-    entries: &mut Entries<I>,
+    entries: &mut Entries<<I as Icon>::Key>,
     mut adder: F,
 ) -> Result<(), Error> {
     it.next();

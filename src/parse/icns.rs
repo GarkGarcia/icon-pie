@@ -18,7 +18,7 @@ pub fn parse(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
     Ok(Command::Icns(entries, Output::Stdout))
 }
 
-fn command(it: &mut TokenStream, entries: Entries<Icns>) -> Result<Command, Error> {
+fn command(it: &mut TokenStream, entries: Entries<<Icns as Icon>::Key>) -> Result<Command, Error> {
     it.next();
     match it.peek() {
         Some(&(_, Token::Path(path))) => expect_end(it, Command::Icns(entries, Output::Path(path.clone()))),
@@ -27,7 +27,7 @@ fn command(it: &mut TokenStream, entries: Entries<Icns>) -> Result<Command, Erro
     }
 }
 
-fn entry_adder(it: &mut TokenStream, entries: &mut Entries<Icns>, path: &PathBuf) -> Result<(), Error> {
+fn entry_adder(it: &mut TokenStream, entries: &mut Entries<<Icns as Icon>::Key>, path: &PathBuf) -> Result<(), Error> {
     // TODO Preallocate this Vec
     let mut sizes = Vec::with_capacity(0);
 
