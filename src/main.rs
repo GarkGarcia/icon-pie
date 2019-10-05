@@ -6,7 +6,7 @@ mod error;
 mod command;
 
 use std::{env, io, path::{PathBuf}};
-use icon_baker::{resample, image::DynamicImage, Icon, SourceImage};
+use icon_baker::{resample, image::DynamicImage, SourceImage};
 
 #[derive(Clone, Debug)]
 pub enum Output {
@@ -21,7 +21,7 @@ pub enum ResamplingFilter {
     Cubic
 }
 
-pub type Entries<I: Icon> = Vec<(I::Key, PathBuf, ResamplingFilter)>;
+pub type Entries<K> = Vec<(K, PathBuf, ResamplingFilter)>;
 
 #[macro_export]
 macro_rules! syntax {

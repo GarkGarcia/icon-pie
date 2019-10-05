@@ -6,9 +6,9 @@ use crossterm::{style, Color};
 pub enum Command {
     Help,
     Version,
-    Ico(Entries<Ico>, Output),
-    Icns(Entries<Icns>, Output),
-    Favicon(Entries<Favicon>, Output)
+    Ico(Entries<<Ico as Icon>::Key>, Output),
+    Icns(Entries<<Icns as Icon>::Key>, Output),
+    Favicon(Entries<<Favicon as Icon>::Key>, Output)
 }
 
 impl Command {
@@ -25,7 +25,7 @@ impl Command {
     }
 }
 
-fn icon<I: Icon>(entries: Entries<I>, output: Output) -> Result<(), Error> {
+fn icon<I: Icon>(entries: Entries<I::Key>, output: Output) -> Result<(), Error> {
     let mut icon = I::new();
     let mut source_map = HashMap::with_capacity(entries.len());
 
