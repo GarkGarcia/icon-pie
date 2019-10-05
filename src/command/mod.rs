@@ -12,7 +12,7 @@ pub enum Command {
 }
 
 impl Command {
-    pub fn eval(&self) -> Result<(), Error> {
+    pub fn eval(self) -> Result<(), Error> {
         match self {
             Command::Icns(entries, output) => icon::<Icns>(entries, output)?,
             Command::Ico(entries, output) => icon::<Ico>(entries, output)?,
@@ -25,12 +25,12 @@ impl Command {
     }
 }
 
-fn icon<I: Icon>(entries: &Entries<I>, output: &Output) -> Result<(), Error> {
+fn icon<I: Icon>(entries: Entries<I>, output: Output) -> Result<(), Error> {
     let mut icon = I::new();
     let mut source_map = HashMap::with_capacity(entries.len());
 
-    for &(key, path, filter) in entries {
-        let src = source_map.entry(path)
+    for (key, path, filter) in entries {
+        let src = source_map.entry(path.clone())
             .or_insert(source_image(&path)?);
 
         if let Err(err) = icon.add_entry(|src, size| filter.call(src, size), src, key) {
@@ -38,13 +38,13 @@ fn icon<I: Icon>(entries: &Entries<I>, output: &Output) -> Result<(), Error> {
         }
     }
 
-    match output {
+    match &output {
         Output::Path(path) => {
             let mut file = fs::File::create(path.clone())
-                .map_err(|err| Error::Output(err, *output))?;
+                .map_err(|err| Error::Output(err, output.clone()))?;
 
             icon.write(&mut file)
-                .map_err(|err| Error::Output(err, *output))?;
+                .map_err(|err| Error::Output(err, output.clone()))?;
 
             println!(
                 "{} Icon saved at {}.",
