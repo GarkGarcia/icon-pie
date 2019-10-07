@@ -1,5 +1,5 @@
 use crate::{error::{Error, FileError}, Entries, Output, TITLE, VERSION, USAGE, COMMANDS, EXAMPLES};
-use std::{io::{self, stdout}, fs, path::PathBuf, collections::HashMap};
+use std::{io::{self, stdout}, path::PathBuf, collections::HashMap};
 use icon_baker::{ico::Ico, icns::Icns, favicon::Favicon, Icon, SourceImage};
 use crossterm::{style, Color};
 
@@ -25,7 +25,7 @@ impl Command {
     }
 }
 
-fn icon<I: Icon>(entries: Entries<<I as Icon>::Key>, output: Output) -> Result<(), Error> {
+fn icon<I: Icon>(entries: Entries<I::Key>, output: Output) -> Result<(), Error> {
     let mut icon = I::new();
     let mut source_map = HashMap::with_capacity(entries.len());
 
@@ -40,10 +40,7 @@ fn icon<I: Icon>(entries: Entries<<I as Icon>::Key>, output: Output) -> Result<(
 
     match &output {
         Output::Path(path) => {
-            let mut file = fs::File::create(path.clone())
-                .map_err(|err| Error::Output(err, output.clone()))?;
-
-            icon.write(&mut file)
+            icon.save(path)
                 .map_err(|err| Error::Output(err, output.clone()))?;
 
             println!(

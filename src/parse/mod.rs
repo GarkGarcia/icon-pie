@@ -1,13 +1,12 @@
-use crate::{command::Command, ResamplingFilter, Entries, syntax, error::{Error, SyntaxError}};
-use std::{path::PathBuf, iter::{Iterator, Peekable, Enumerate}, slice::Iter};
-use icon_baker::Icon;
+use crate::{command::Command, syntax, error::{Error, SyntaxError}};
+use std::{iter::{Iterator, Peekable, Enumerate}, slice::Iter};
+use icon_baker::{Icon, ico::{Ico, IcoKey}, icns::Icns, favicon::Favicon};
 
+mod combinators;
 mod token;
-mod ico;
-mod icns;
-mod favicon;
 
 use token::{Flag, Token, Cmd};
+use combinators::{icon, expect_end};
 
 type TokenStream<'a> = Peekable<Enumerate<Iter<'a, Token>>>;
 
@@ -23,9 +22,9 @@ pub fn args() -> Result<Command, Error> {
     let mut it = tokens.iter().enumerate().peekable();
 
     match it.peek() {
-        Some(&(_, Token::Command(Cmd::Ico))) => ico::parse(&mut it, n_entries),
-        Some(&(_, Token::Command(Cmd::Icns))) => icns::parse(&mut it, n_entries),
-        Some(&(_, Token::Command(Cmd::Favicon))) => favicon::parse(&mut it, n_entries),
+        Some(&(_, Token::Command(Cmd::Ico))) => ico(&mut it, n_entries),
+        Some(&(_, Token::Command(Cmd::Icns))) => icns(&mut it, n_entries),
+        Some(&(_, Token::Command(Cmd::Favicon))) => favicon(&mut it, n_entries),
         Some(&(_, Token::Flag(Flag::Help))) => expect_end(&mut it, Command::Help),
         Some(&(_, Token::Flag(Flag::Version))) => expect_end(&mut it, Command::Version),
         Some(&(c, _)) => syntax!(SyntaxError::UnexpectedToken(c)),
@@ -38,36 +37,29 @@ fn tokens<'a>(args: Vec<String>) -> Vec<Token> {
     args.iter().map(|arg| Token::from(arg.as_ref())).collect()
 }
 
-fn add_entry<I: Icon, F: FnMut(&mut TokenStream, &mut Entries<<I as Icon>::Key>, &PathBuf) -> Result<(), Error>>(
-    it: &mut TokenStream,
-    entries: &mut Entries<<I as Icon>::Key>,
-    mut adder: F,
-) -> Result<(), Error> {
-    it.next();
-    match it.peek() {
-        Some(&(_, Token::Path(path))) => adder(it, entries, path),
-        Some(&(c, _)) => syntax!(SyntaxError::UnexpectedToken(c)),
-        None => syntax!(SyntaxError::UnexpectedEnd)
-    }
+#[inline]
+fn favicon(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
+    icon::<Favicon, _, _>(
+        Command::Favicon,
+        <Favicon as Icon>::Key::new,
+        it, n_entries
+    )
 }
 
-fn filter(it: &mut TokenStream) -> Result<ResamplingFilter, Error> {
-    if let Some((_, Token::Flag(Flag::Resample))) = it.peek() {
-        it.next();
-        match it.peek() {
-            Some(&(_, &Token::Filter(filter))) => { it.next(); return Ok(filter); },
-            Some(&(c, _)) => return syntax!(SyntaxError::UnexpectedToken(c)),
-            None => return syntax!(SyntaxError::UnexpectedEnd)
-        }
-    }
-
-    Ok(ResamplingFilter::Nearest)
+#[inline]
+fn icns(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
+    icon::<Icns, _, _>(
+        Command::Icns,
+        <Icns as Icon>::Key::from,
+        it, n_entries
+    )
 }
 
-fn expect_end(it: &mut TokenStream, command: Command) -> Result<Command, Error> {
-    it.next();
-    match it.peek() {
-        Some(&(c, _)) => syntax!(SyntaxError::UnexpectedToken(c)),
-        None => Ok(command)
-    }
+#[inline]
+fn ico(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
+    icon::<Ico, _, _>(
+        Command::Ico,
+        |size| if size < 256 { IcoKey::new(size as u8) } else { None },
+        it, n_entries
+    )
 }
