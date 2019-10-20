@@ -23,7 +23,9 @@ pub enum Flag {
     Help,
     Version,
     Resample,
-    Output
+    Output,
+    AppleTouch,
+    WebApp
 }
 
 impl<'a> From<&'a str> for Token {
@@ -40,6 +42,8 @@ impl<'a> From<&'a str> for Token {
             "-h" | "--help" => Token::Flag(Flag::Help),
             "-v" | "--version" => Token::Flag(Flag::Version),
             "-o" | "--output" => Token::Flag(Flag::Output),
+            "--apple-touch" => Token::Flag(Flag::AppleTouch),
+            "--web-app" => Token::Flag(Flag::WebApp),
             _ => {
                 if let Ok(size) = s.parse::<u32>() {
                     Token::Size(size)

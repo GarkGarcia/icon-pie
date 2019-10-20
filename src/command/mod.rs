@@ -1,5 +1,5 @@
 use crate::{error::{Error, FileError}, Entries, Output, TITLE, VERSION, USAGE, COMMANDS, EXAMPLES};
-use std::{io::{self, stdout}, path::PathBuf, collections::HashMap};
+use std::{io::stdout, collections::HashMap};
 use icon_baker::{ico::Ico, icns::Icns, favicon::Favicon, Icon, SourceImage};
 use crossterm::{style, Color};
 
@@ -8,15 +8,26 @@ pub enum Command {
     Version,
     Ico(Entries<<Ico as Icon>::Key>, Output),
     Icns(Entries<<Icns as Icon>::Key>, Output),
-    Favicon(Entries<<Favicon as Icon>::Key>, Output)
+    Favicon(Entries<<Favicon as Icon>::Key>, FaviconConfig, Output)
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+pub struct FaviconConfig {
+    apple_touch: bool,
+    web_app: bool
 }
 
 impl Command {
     pub fn eval(self) -> Result<(), Error> {
         match self {
-            Command::Icns(entries, output) => icon::<Icns>(entries, output)?,
-            Command::Ico(entries, output) => icon::<Ico>(entries, output)?,
-            Command::Favicon(entries, output) => icon::<Favicon>(entries, output)?,
+            Command::Icns(entries, out) => write(&mut icon::<Icns>(entries)?, &out)?,
+            Command::Ico(entries, out) => write(&mut icon::<Ico>(entries)?, &out)?,
+            Command::Favicon(entries, config, cmd) => {
+                write(
+                    icon::<Favicon>(entries)?.apple_touch(config.apple_touch).web_app(config.web_app),
+                    &cmd
+                )?;
+            },
             Command::Help => help(),
             Command::Version => version()
         }
@@ -25,19 +36,33 @@ impl Command {
     }
 }
 
-fn icon<I: Icon>(entries: Entries<I::Key>, output: Output) -> Result<(), Error> {
-    let mut icon = I::new();
+impl FaviconConfig {
+    pub fn new(web_app: bool, apple_touch: bool) -> Self {
+        FaviconConfig { web_app, apple_touch }
+    }
+}
+
+/// Trys to create an `I` from an `Entries<I::Key>`.
+fn icon<I: Icon>(entries: Entries<I::Key>) -> Result<I, Error> {
+    let mut icon = I::with_capacity(entries.len());
     let mut source_map = HashMap::with_capacity(entries.len());
 
     for (key, path, filter) in entries {
         let src = source_map.entry(path.clone())
-            .or_insert(source_image(&path)?);
+            .or_insert(SourceImage::open(&path).map_err(|err| FileError(err, path.clone()))?);
 
         if let Err(err) = icon.add_entry(|src, size| filter.call(src, size), src, key) {
             return Err(Error::from_baker(err, path.clone()));
         }
     }
 
+    Ok(icon)
+}
+
+fn write<I: Icon>(
+    icon: &mut I,
+    output: &Output
+) -> Result<(), Error> {
     match &output {
         Output::Path(path) => {
             icon.save(path)
@@ -53,16 +78,6 @@ fn icon<I: Icon>(entries: Entries<I::Key>, output: Output) -> Result<(), Error> 
         },
         Output::Stdout => icon.write(&mut stdout())
             .map_err(|err| Error::Output(err, Output::Stdout))
-    }
-}
-
-#[inline]
-fn source_image(path: &PathBuf) -> Result<SourceImage, Error> {
-    match SourceImage::open(path) {
-        Some(src) => Ok(src),
-        None => Err(
-            Error::File(FileError(io::Error::from(io::ErrorKind::NotFound), path.clone()))
-        )
     }
 }
 

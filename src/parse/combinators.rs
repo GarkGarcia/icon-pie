@@ -1,33 +1,24 @@
 use crate::{command::Command, ResamplingFilter, Output, Entries, syntax, error::{Error, SyntaxError}};
 use super::{Token, TokenStream, Flag};
-use std::{path::PathBuf, iter::Iterator};
+use std::{io, path::PathBuf, iter::Iterator};
 use icon_baker::Icon;
 
-pub fn icon<
-    I: Icon,
-    F: 'static + FnMut(Entries<<I as Icon>::Key>, Output) -> Command,
-    G: FnMut(u32) -> Option<<I as Icon>::Key>
->(
-    mut constructor: F,
-    mut converter: G,
+pub fn entries<I: Icon,F: FnMut(u32) -> io::Result<<I as Icon>::Key>>(
+    mut converter: F,
     it: &mut TokenStream,
     n_entries: usize
-) -> Result<Command, Error> {
+) -> Result<Entries<<I as Icon>::Key>, Error> {
     let mut entries: Entries<<I as Icon>::Key> = Vec::with_capacity(n_entries);
     it.next();
 
-    while let Some(&(c, token)) = it.peek() {
-        match token {
-            Token::Flag(Flag::Entry) => entry::<I, _>(|size| converter(size), it, &mut entries)?,
-            Token::Flag(Flag::Output) => return expect_pathed_output::<I, _>(constructor, it, entries),
-            _ => return syntax!(SyntaxError::UnexpectedToken(c))
-        }
+    while let Some(&(_, Token::Flag(Flag::Entry))) = it.peek() {
+        entry::<I, _>(|size| converter(size), it, &mut entries)?;
     }
 
-    Ok(constructor(entries, Output::Stdout))
+    Ok(entries)
 }
 
-pub fn entry<I: Icon, F: FnMut(u32) -> Option<<I as Icon>::Key>>(
+pub fn entry<I: Icon, F: FnMut(u32) -> io::Result<<I as Icon>::Key>>(
     adder: F,
     it: &mut TokenStream,
     entries: &mut Entries<<I as Icon>::Key>
@@ -40,7 +31,7 @@ pub fn entry<I: Icon, F: FnMut(u32) -> Option<<I as Icon>::Key>>(
     }
 }
 
-fn keys<I: Icon, F: FnMut(u32) -> Option<<I as Icon>::Key>>(
+fn keys<I: Icon, F: FnMut(u32) -> io::Result<<I as Icon>::Key>>(
     mut converter: F,
     it: &mut TokenStream,
     entries: &mut Entries<<I as Icon>::Key>,
@@ -64,7 +55,7 @@ fn keys<I: Icon, F: FnMut(u32) -> Option<<I as Icon>::Key>>(
     let filter = filter(it)?;
 
     for size in sizes {
-        if let Some(key) = converter(size) {
+        if let Ok(key) = converter(size) {
             entries.push((key, path.clone(), filter));
         } else {
             return Err(Error::InvalidDimensions(size));
@@ -96,7 +87,7 @@ pub fn expect_end(it: &mut TokenStream, command: Command) -> Result<Command, Err
     }
 }
 
-fn expect_pathed_output<I: Icon, F: 'static + FnMut(Entries<<I as Icon>::Key>, Output) -> Command>(
+pub fn output<I: Icon, F: 'static + FnMut(Entries<<I as Icon>::Key>, Output) -> Command>(
     mut constructor: F,
     it: &mut TokenStream,
     entries: Entries<<I as Icon>::Key>

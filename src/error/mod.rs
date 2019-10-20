@@ -58,3 +58,9 @@ impl Display for Error {
         }
     }
 }
+
+impl From<FileError> for Error {
+    fn from(err: FileError) -> Self {
+        Self::File(err)
+    }
+}

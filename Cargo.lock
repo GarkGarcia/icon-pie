@@ -340,12 +340,12 @@ name = "icon-pie"
 version = "0.1.4-beta"
 dependencies = [
  "crossterm 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "icon_baker 3.2.0-beta.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "icon_baker 3.2.0-beta.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "icon_baker"
-version = "3.2.0-beta.3"
+version = "3.2.0-beta.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "icns 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -880,7 +880,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum harfbuzz_rs 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "534c8e9b15d8db6e69654b07dad955f4132757194e7d2bba620d38cf08996088"
 "checksum icns 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ae64c2d27bca0b23bf71443d69c491d07ef1d2f485dc4ca4e525f5c7dbb8672d"
 "checksum ico 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6a4b3331534254a9b64095ae60d3dc2a8225a7a70229cd5888be127cdc1f6804"
-"checksum icon_baker 3.2.0-beta.3 (registry+https://github.com/rust-lang/crates.io-index)" = "bbc020dd5d8325db1ca02f1acbd7076ae0b8edaa5ef5e0b6317a23ff6678d780"
+"checksum icon_baker 3.2.0-beta.5 (registry+https://github.com/rust-lang/crates.io-index)" = "c7f86a9e35f4f3c0f336cadbdb449d687471c211ce6eb95af49abc09d47e27fb"
 "checksum image 0.22.1 (registry+https://github.com/rust-lang/crates.io-index)" = "663a975007e0b49903e2e8ac0db2c432c465855f2d65f17883ba1476e85f0b42"
 "checksum inflate 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)" = "f5f9f47468e9a76a6452271efadc88fe865a82be91fe75e6c0c57b87ccea59d4"
 "checksum inflate 0.4.5 (registry+https://github.com/rust-lang/crates.io-index)" = "1cdb29978cc5797bd8dcc8e5bf7de604891df2a8dc576973d71a281e916db2ff"

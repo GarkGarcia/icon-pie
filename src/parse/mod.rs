@@ -1,12 +1,12 @@
-use crate::{command::Command, syntax, error::{Error, SyntaxError}};
-use std::{iter::{Iterator, Peekable, Enumerate}, slice::Iter};
-use icon_baker::{Icon, ico::{Ico, IcoKey}, icns::Icns, favicon::Favicon};
+use crate::{command::{Command, FaviconConfig}, syntax, error::{Error, SyntaxError}, Output};
+use std::{convert::TryFrom, iter::{Iterator, Peekable, Enumerate}, slice::Iter};
+use icon_baker::{Icon, ico::Ico, icns::Icns, favicon::Favicon};
 
 mod combinators;
 mod token;
 
 use token::{Flag, Token, Cmd};
-use combinators::{icon, expect_end};
+use combinators::{entries, expect_end, output};
 
 type TokenStream<'a> = Peekable<Enumerate<Iter<'a, Token>>>;
 
@@ -39,27 +39,71 @@ fn tokens<'a>(args: Vec<String>) -> Vec<Token> {
 
 #[inline]
 fn favicon(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
-    icon::<Favicon, _, _>(
-        Command::Favicon,
-        <Favicon as Icon>::Key::new,
+    let mut web_app = false;
+    let mut apple_touch = false;
+    
+    let entries = entries::<Favicon, _>(
+        <Favicon as Icon>::Key::try_from,
         it, n_entries
-    )
+    )?;
+
+    while let Some(&(c, Token::Flag(flag))) = it.peek() {
+        match flag {
+            Flag::AppleTouch => {
+                if !apple_touch {
+                    apple_touch = true;
+                    it.next();
+                } else {
+                    return syntax!(SyntaxError::UnexpectedToken(c));
+                }
+            },
+            Flag::WebApp => {
+                if !web_app {
+                    web_app = true;
+                    it.next();
+                } else {
+                    return syntax!(SyntaxError::UnexpectedToken(c));
+                }
+            },
+            _ => break
+        }
+    }
+
+    let config = FaviconConfig::new(web_app, apple_touch);
+
+    match it.peek() {
+        Some((_, Token::Flag(Flag::Output))) => {
+            output::<Favicon, _>(move |entries, out| Command::Favicon(entries, config, out), it, entries)
+        },
+        None => Ok(Command::Favicon(entries, config, Output::Stdout)),
+        Some(&(c, _)) => syntax!(SyntaxError::UnexpectedToken(c))
+    }
 }
 
 #[inline]
 fn icns(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
-    icon::<Icns, _, _>(
-        Command::Icns,
-        <Icns as Icon>::Key::from,
+    let entries = entries::<Icns, _>(
+        <Icns as Icon>::Key::try_from,
         it, n_entries
-    )
+    )?;
+
+    match it.peek() {
+        Some((_, Token::Flag(Flag::Output))) => output::<Icns, _>(Command::Icns, it, entries),
+        None => Ok(Command::Icns(entries, Output::Stdout)),
+        Some(&(c, _)) => syntax!(SyntaxError::UnexpectedToken(c))
+    }
 }
 
 #[inline]
 fn ico(it: &mut TokenStream, n_entries: usize) -> Result<Command, Error> {
-    icon::<Ico, _, _>(
-        Command::Ico,
-        |size| if size < 256 { IcoKey::new(size as u8) } else { None },
+    let entries = entries::<Ico, _>(
+        <Ico as Icon>::Key::try_from,
         it, n_entries
-    )
+    )?;
+
+    match it.peek() {
+        Some((_, Token::Flag(Flag::Output))) => output::<Ico, _>(Command::Ico, it, entries),
+        None => Ok(Command::Ico(entries, Output::Stdout)),
+        Some(&(c, _)) => syntax!(SyntaxError::UnexpectedToken(c))
+    }
 }
