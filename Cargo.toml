@@ -1,6 +1,6 @@
 [package]
 name = "icon-pie"
-version = "0.1.4-beta"
+version = "0.1.0-alpha"
 authors = [
     "Thiago Brevidelli <thiago.brevidelli.garcia@protonmail.com>",
     "Nicolas Girard <girard.nicolas@gmail.com>"
@@ -15,5 +15,5 @@ keywords = ["cli", "icon", "ico", "icns"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-icon_baker = "3.2.0-beta.4"
+icon_baker = "3.2.0-beta.7"
 crossterm = "0.7.0"

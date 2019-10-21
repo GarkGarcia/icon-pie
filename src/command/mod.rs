@@ -1,4 +1,4 @@
-use crate::{error::{Error, FileError}, Entries, Output, TITLE, VERSION, USAGE, COMMANDS, EXAMPLES};
+use crate::{error::{Error, FileError}, Entries, Output};
 use std::{io::stdout, collections::HashMap};
 use icon_baker::{ico::Ico, icns::Icns, favicon::Favicon, Icon, SourceImage};
 use crossterm::{style, Color};
@@ -17,16 +17,48 @@ pub struct FaviconConfig {
     web_app: bool
 }
 
+const VERSION: &str = "0.1.4-beta";
+const TITLE: &str = r"
+ _____               ______ _      
+|_   _|              | ___ (_)     
+  | |  ___ ___  _ __ | |_/ /_  ___ 
+  | | / __/ _ \| '_ \|  __/| |/ _ \
+ _| || (_| (_) | | | | |   | |  __/
+ \___/\___\___/|_| |_\_|   |_|\___|";
+const USAGE: [&str;5] = [
+    "icon-pie icns ((-e | --entry) <file path> <size>... [(-r | --resample) (nearest | linear | cubic)])... [(-o | --output) <path>]",
+    "icon-pie ico ((-e | --entry) <file path> <size>... [(-r | --resample) (nearest | linear | cubic)])... [(-o | --output) <path>]",
+    "icon-pie favicon ((-e | --entry) <file path> <size>... [(-r | --resample) (nearest | linear | cubic)])... [--apple-touch] [--web-app] [(-o | --output) <path>]",
+    "icon-pie (-h | --help)",
+    "icon-pie (-v | --version)"
+];
+
+const OPTIONS: [&str;7] = [
+    "Specify an entry's source image and target sizes.",
+    "Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified the app defaults to `nearest`.",
+    "Specify an output path. This is optional. If absent the output is directed to `stdout`.",
+    "Favicon specific option. Confire the output to include link tags for apple-touch icons in the HTML helper.",
+    "Favicon specific option. Confire the output to include a `.webmanifest` helper for PWA icons.",
+    "Help.",
+    "Display version information.",
+];
+
+const EXAMPLES: [&str;3] = [
+    "$ icon-pie ico -e big.svg 32 64 128 -o icon.ico",
+    "$ icon-pie icns -e small.png 32 64 -e big.svg 128 -o icon.icns",
+    "$ icon-pie favicon -e small.png 64 128 -r linear -o ./favicon/"
+];
+
 impl Command {
     pub fn eval(self) -> Result<(), Error> {
         match self {
-            Command::Icns(entries, out) => write(&mut icon::<Icns>(entries)?, &out)?,
-            Command::Ico(entries, out) => write(&mut icon::<Ico>(entries)?, &out)?,
-            Command::Favicon(entries, config, cmd) => {
+            Command::Icns(entries, out) => write(&mut icon::<Icns>(entries)?, out)?,
+            Command::Ico(entries, out) => write(&mut icon::<Ico>(entries)?, out)?,
+            Command::Favicon(entries, config, out) => {
                 write(
                     icon::<Favicon>(entries)?.apple_touch(config.apple_touch).web_app(config.web_app),
-                    &cmd
-                )?;
+                    out
+                )?
             },
             Command::Help => help(),
             Command::Version => version()
@@ -59,10 +91,7 @@ fn icon<I: Icon>(entries: Entries<I::Key>) -> Result<I, Error> {
     Ok(icon)
 }
 
-fn write<I: Icon>(
-    icon: &mut I,
-    output: &Output
-) -> Result<(), Error> {
+fn write<I: Icon>(icon: &mut I, output: Output) -> Result<(), Error> {
     match &output {
         Output::Path(path) => {
             icon.save(path)
@@ -91,23 +120,32 @@ fn help() {
     );
 
     println!(
-        "\n{}\n   {}\n\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}\n{}{}",
+        "\n{}\n   {}\n   {}\n   {}\n   {}\n   {}",
         style("Usage:").with(Color::Blue),
-        style(USAGE).with(Color::Green),
-        style("   -e <options>          ").with(Color::Green),
-        COMMANDS[0],
-        style("   -r <filter>           ").with(Color::Green),
-        COMMANDS[1],
-        style("   -ico [<output path>]  ").with(Color::Green),
-        COMMANDS[2],
-        style("   -icns [<output path>] ").with(Color::Green),
-        COMMANDS[3],
-        style("   -png [<output path>]  ").with(Color::Green),
-        COMMANDS[4],
-        style("   -h, --help            ").with(Color::Green),
-        COMMANDS[5],
-        style("   -v, --version         ").with(Color::Green),
-        COMMANDS[6]
+        style(USAGE[0]).with(Color::Green),
+        style(USAGE[1]).with(Color::Green),
+        style(USAGE[2]).with(Color::Green),
+        style(USAGE[3]).with(Color::Green),
+        style(USAGE[4]).with(Color::Green),
+    );
+
+    println!(
+        "\n{}\n   {}{}\n   {}{}\n   {}{}\n   {}{}\n   {}{}\n   {}{}\n   {}{}",
+        style("Options:").with(Color::Blue),
+        style("-e FILE (SIZE)..., --entry FILE (SIZE)... ").with(Color::Green),
+        OPTIONS[0],
+        style("-r FILTER, --resample FILTER              ").with(Color::Green),
+        OPTIONS[1],
+        style("-o PATH, --output PATH                    ").with(Color::Green),
+        OPTIONS[2],
+        style("--apple-touch                             ").with(Color::Green),
+        OPTIONS[3],
+        style("--web-app                                 ").with(Color::Green),
+        OPTIONS[4],
+        style("-h, --help                                ").with(Color::Green),
+        OPTIONS[5],
+        style("-v, --version                             ").with(Color::Green),
+        OPTIONS[6]
     );
 
     println!(

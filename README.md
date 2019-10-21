@@ -43,7 +43,7 @@ presents a transparent background, the transparency is preserved in the re-scale
 
 For _[raster graphics](https://en.wikipedia.org/wiki/Raster_graphics)_ (`jpeg`, `png`, ...), **IconPie** 
 uses _[nearest-neighbor interpolation](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation)_ 
-by default, optimizing for  small-resolution images.
+by default, optimizing for small-resolution images.
 
 Furthermore, when using _nearest-neighbor interpolation_, it only up-scales images on an integer 
 scale, preserving as much detail as possible.
@@ -61,18 +61,21 @@ regardless of any specified resampling filter. _Vector graphics_ are also raster
 
 The formal [`docopt`](http://docopt.org/) syntax for using **IconPie** is as follows:
 
-```
-$ icon-pie ((-e <file path> <size>... [-r (nearest | linear | cubic)])... (-ico | -icns | -png) [<output path>]) | -h | --help | -v | --version
-```
+* `icon-pie icns ((-e | --entry) <file path> <size>... [(-r | --resample) (nearest | linear | cubic)])... [(-o | --output) <path>]`
+* `icon-pie ico ((-e | --entry) <file path> <size>... [(-r | --resample) (nearest | linear | cubic)])... [(-o | --output) <path>]`
+* `icon-pie favicon ((-e | --entry) <file path> <size>... [(-r | --resample) (nearest | linear | cubic)])... [--apple-touch] [--web-app] [(-o --output) <path>]`
+* `icon-pie (-h | --help)`
+* `icon-pie (-v | --version)`
 
-* `-e <options>` — Specify an entry's source image, target sizes and resampling filter (optional).
-* `-r <filter>` — Specify a resampling filter: `nearest`, `linear` or `cubic`. Defaults to `nearest`.
-* `-ico [<output path>]` — Outputs to an `.ico` file. If no output path is specified the app outputs to 
-  `stdout`.
-* `-icns [<output path>]` — Outputs to an `.icns` file. If no output path is specified the app outputs 
-  to `stdout`.
-* `-png [<output path>]` — Outputs a `.png` sequence as a `.tar` file. If no output path is specified the 
-  app outputs to `stdout`.
+## Options
+
+* `-e FILE (SIZE)...`, `--entry FILE (SIZE)...` — Specify an entry's source image and target sizes.
+* `-r FILTER`, `--resample FILTER` — Specify a re-sampling filter: `nearest`, `linear` or `cubic`. If no filter is specified
+  the app defaults to `nearest`.
+* `-o PATH`, `--output PATH` — Specify an output path. This is optional. If absent the output is directed to `stdout`.
+* `--apple-touch` — Favicon specific option. Confire the output to include link tags for apple-touch icons in the HTML helper.
+* `--web-app` — Favicon specific option. Confire the output to include a `.webmanifest` helper for
+  [PWA icons](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Installable_PWAs).
 * `-h`, `--help` — Help.
 * `-v`, `--version` — Display version information.
 
@@ -89,7 +92,7 @@ We'll walk trought some practical examples of **IconPie** usage.
 > Take `big.svg`, resize it to _32x32_, _64x64_ and _128x128_. Then save it at `icon.ico`.
 
 ```
-$ icon-pie -e big.svg 32 64 128 -ico icon.ico
+$ icon-pie ico -e big.svg 32 64 128 -o icon.ico
 ```
 
 ![Example 1](examples/example_1.png)
@@ -100,7 +103,7 @@ $ icon-pie -e big.svg 32 64 128 -ico icon.ico
 > Then combine the re-scaled entries in `icon.icns`.
 
 ```
-$ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns
+$ icon-pie icns -e small.png 32 64 -e big.svg 128 -o icon.icns
 ```
 
 ![Example 2](examples/example_2.png)
@@ -108,24 +111,29 @@ $ icon-pie -e small.png 32 64 -e big.svg 128 -icns icon.icns
 ### Specifying a Resampling Filter
 
 > Take `small.png`, resize it to _32x32_ and _64x64_ **_using linear interpolation_**. Then take 
-> `big.svg` and resize it _128x128_. Then combine the re-scaled entries in `icon.tar` as a `png` 
-> sequence.
+> `big.svg` and resize it _128x128_. Then combine the re-scaled entries into a _favicon_ scheme.
 
 ```
-$ icon-pie -e small.png 32 64 -r linear -e big.svg 128 -png icon.tar
+$ icon-pie favicon -e small.png 64 128 -r linear -o ./favicon/
 ```
 
 ![Example 3](examples/example_3.png)
+
+`./favicon/helper.html`
+```html
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-0.png">
+<link rel="icon" type="image/png" sizes="128x128" href="icons/favicon-1.png">
+```
 
 # Support
 
 ## Icon Formats
 
-This are the file formats **IconPie** can output to:
+This are the icon formats **IconPie** can output to:
 
 * `ico`
 * `icns`
-* `png` sequence (`tar`)
+* _favicon_
 
 ### Icns Support
 
@@ -189,3 +197,5 @@ or http://opensource.org/licenses/MIT).
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the 
 work by you shall be licensed as above, without any additional terms or conditions.
+
+Feel free to help out! Contributions are welcomed 😃

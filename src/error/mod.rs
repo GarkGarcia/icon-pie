@@ -23,7 +23,7 @@ impl Error {
         match err {
             icon_baker::Error::AlreadyIncluded(key) => Error::AlreadyIncluded(key.as_size()),
             icon_baker::Error::Io(err) => Error::File(FileError(err, path)),
-            icon_baker::Error::MismatchedDimensions(_, _) => unreachable!()
+            icon_baker::Error::MismatchedDimensions(_, dim) => unreachable!("{:?}", dim)
         }
     }
 }
